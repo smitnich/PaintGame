@@ -11,7 +11,6 @@ public class BlitColors : MonoBehaviour {
     float height;
     Vector2 start;
     Vector2 end;
-    BlitColors pixelScript;
 	// Use this for initialization
 	void Start () {
         Vector3 size = GetComponent<Collider>().bounds.size;
@@ -22,8 +21,6 @@ public class BlitColors : MonoBehaviour {
         end = (transform.position) + size / 2;
         width = end.x - start.x;
         height = end.y - start.y;
-        GameObject floor = GameObject.Find("Floor");
-        pixelScript = floor.GetComponent<BlitColors>();
         colors = new Color[horizPixels * vertPixels];
         for (int i = 0; i < horizPixels * vertPixels; i++)
             colors[i] = firstColor;
@@ -36,8 +33,10 @@ public class BlitColors : MonoBehaviour {
         texture.SetPixels(colors);
         texture.Apply();
     }
-    public void setColor(float x, float y, Color color, int size)
+    public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size)
     {
+        float x = initPos.x;
+        float y = initPos.y;
         if (x < start.x || x > end.x)
             return;
         if (y < start.y || y > end.y)
@@ -46,9 +45,12 @@ public class BlitColors : MonoBehaviour {
         float yPos = y - start.y;
         int xPixel = Mathf.RoundToInt(xPos * horizPixels/width);
         int yPixel = Mathf.RoundToInt(yPos * vertPixels / height);
-        pixelScript.SetPixel(horizPixels-xPixel, vertPixels-yPixel, size, color);
+        int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * horizPixels / width);
+        int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * vertPixels / height);
+        SetPixelCircle(horizPixels-xPixel, vertPixels-yPixel, size/2, color);
+        DrawLine(horizPixels - xPixel, vertPixels - yPixel, horizPixels - xPixelEnd, vertPixels - yPixelEnd, size, color);
     }
-    public void SetPixel(int xPos, int yPos, int radius, Color color) {
+    public void SetPixelCircle(int xPos, int yPos, int radius, Color color) {
         int squaredRadius = radius*radius;
         for (int x = xPos - radius; x <= xPos + radius; x++)
         {
@@ -60,9 +62,57 @@ public class BlitColors : MonoBehaviour {
                 int yDist = Mathf.Abs(y-yPos);
                 if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
                 {
-                    colors[x+y*horizPixels] = color;
+                    setPixel(x, y, color);
                 }
             }
         }
+    }
+    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, Color color)
+    {
+        double xSlope = ((double)(xEnd - xStart)/(yEnd - yStart));
+        if (double.IsNaN(xSlope))
+            xSlope = 0;
+        if (yStart > yEnd)
+        {
+            int temp = yStart;
+            yStart = yEnd;
+            yEnd = temp;
+            temp = xStart;
+            xStart = xEnd;
+            xEnd = temp;
+        }
+        for (int i = yStart; i <= yEnd; i++)
+        {
+              setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart)*xSlope)),i, color);
+        }
+    }
+    public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
+    {
+        double ySlope = ((double)(yEnd - yStart) / (xEnd - xStart));
+        if (ySlope > 1 || ySlope < -1)
+        {
+            DrawLineY(xStart, yStart, xEnd, yEnd, color);
+        }
+        if (double.IsNaN(ySlope))
+            ySlope = 0;
+        if (xStart > xEnd)
+        {
+            int temp = xStart;
+            xStart = xEnd;
+            xEnd = temp;
+            temp = yStart;
+            yStart = yEnd;
+            yEnd = temp;
+        }
+        for (int i = xStart; i <= xEnd; i++)
+        {
+            setPixel(i, Mathf.RoundToInt((float) (yStart+(i-xStart)*ySlope)), color);
+        }
+    }
+    void setPixel(int x, int y, Color color)
+    {
+        if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
+            return;
+        colors[x + y * horizPixels] = color;
     }
 }

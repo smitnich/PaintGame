@@ -20,11 +20,13 @@ public class PlayerMove : MonoBehaviour {
         transform.LookAt(transform.position + new Vector3(horiz, vert, 0.0f).normalized, -Vector3.forward);
         horiz = Input.GetAxis("HorizontalFace");
         vert  = Input.GetAxis("VerticalFace");
+        temp = new Vector2(horiz, vert);
         if (horiz != 0.0f && vert != 0.0f)
         {
             Vector3 direction = new Vector3(horiz, vert, 0.0f).normalized;
             transform.LookAt(transform.position + direction, -Vector3.forward);
-            pf.fire(direction);
+            if (temp.magnitude > 0.5)
+                pf.fire(direction);
         }
     }
 }
