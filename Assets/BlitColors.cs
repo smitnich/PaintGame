@@ -67,11 +67,18 @@ public class BlitColors : MonoBehaviour {
             }
         }
     }
+    //Determine the radius in terms of pixels of the object with horizontal size of objSize
+    public int determineSize(float objSize)
+    {
+        return Mathf.RoundToInt(objSize * horizPixels / width)*2;
+    }
     public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double xSlope = ((double)(xEnd - xStart)/(yEnd - yStart));
-        if (double.IsNaN(xSlope))
+        if (double.IsNaN(xSlope) || double.IsInfinity(xSlope))
+        {
             xSlope = 0;
+        }
         if (yStart > yEnd)
         {
             int temp = yStart;
@@ -82,10 +89,10 @@ public class BlitColors : MonoBehaviour {
             xEnd = temp;
         }
         for (int i = yStart; i <= yEnd; i++)
-        {
+        {            
             for (int j = -radius / 2; j <= radius / 2; j++)
             {
-                setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
+              setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart)*xSlope))+j,i, color);
             }
         }
     }
@@ -96,7 +103,7 @@ public class BlitColors : MonoBehaviour {
         {
             DrawLineY(xStart, yStart, xEnd, yEnd, radius, color);
         }
-        if (double.IsNaN(ySlope))
+        if (double.IsNaN(ySlope) || double.IsInfinity(ySlope))
         {
             ySlope = 0;
         }
