@@ -5,6 +5,7 @@ public class PlayerMove : MonoBehaviour {
     public int moveSpeed = 1;
     public float deadzone = 0.4f;
     PlayerFire pf;
+    public GameObject objectWithin;
 	// Use this for initialization
 	void Start () {
         pf = (PlayerFire)GetComponent<PlayerFire>();
@@ -13,11 +14,13 @@ public class PlayerMove : MonoBehaviour {
 	void FixedUpdate () {
         float horiz = Input.GetAxis("Horizontal");
         float vert = Input.GetAxis("Vertical");
-        //Debug.Log(string.Format("Horiz = {0}|Vert = {1}", horiz, vert));
         Vector2 temp = new Vector2(horiz, vert);
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Vector3 objSize = objectWithin.GetComponent<Renderer>().bounds.size;
         transform.position += new Vector3(horiz,vert,0)*Time.deltaTime*moveSpeed;
         transform.LookAt(transform.position + new Vector3(horiz, vert, 0.0f).normalized, -Vector3.forward);
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, objectWithin.transform.position.x - objSize.x / 2, objectWithin.transform.position.x + objSize.x / 2),
+                                Mathf.Clamp(transform.position.y, objectWithin.transform.position.y - objSize.y / 2, objectWithin.transform.position.y + objSize.y / 2),
+                                transform.position.z);
         horiz = Input.GetAxis("HorizontalFace");
         vert  = Input.GetAxis("VerticalFace");
         temp = new Vector2(horiz, vert);
