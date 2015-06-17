@@ -67,7 +67,7 @@ public class BlitColors : MonoBehaviour {
             }
         }
     }
-    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, Color color)
+    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double xSlope = ((double)(xEnd - xStart)/(yEnd - yStart));
         if (double.IsNaN(xSlope))
@@ -83,7 +83,10 @@ public class BlitColors : MonoBehaviour {
         }
         for (int i = yStart; i <= yEnd; i++)
         {
-              setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart)*xSlope)),i, color);
+            for (int j = -radius / 2; j <= radius / 2; j++)
+            {
+                setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
+            }
         }
     }
     public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
@@ -91,10 +94,12 @@ public class BlitColors : MonoBehaviour {
         double ySlope = ((double)(yEnd - yStart) / (xEnd - xStart));
         if (ySlope > 1 || ySlope < -1)
         {
-            DrawLineY(xStart, yStart, xEnd, yEnd, color);
+            DrawLineY(xStart, yStart, xEnd, yEnd, radius, color);
         }
         if (double.IsNaN(ySlope))
+        {
             ySlope = 0;
+        }
         if (xStart > xEnd)
         {
             int temp = xStart;
@@ -106,7 +111,10 @@ public class BlitColors : MonoBehaviour {
         }
         for (int i = xStart; i <= xEnd; i++)
         {
-            setPixel(i, Mathf.RoundToInt((float) (yStart+(i-xStart)*ySlope)), color);
+            for (int j = -radius / 2; j <= radius / 2; j++)
+            {
+                setPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope))+j, color);
+            }
         }
     }
     void setPixel(int x, int y, Color color)
