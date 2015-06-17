@@ -2,13 +2,14 @@
 using System.Collections;
 
 public class PaintTrail : MonoBehaviour {
-    public Color color = Color.red;
+    Color color;
     GameObject floor;
     BlitColors script;
     Vector3 lastPosition;
     int size;
 	// Use this for initialization
 	void Start () {
+        color = GetComponent<SetColor>().color;
         Vector3 extents = GetComponent<Renderer>().bounds.extents;
         floor = GameObject.Find("Floor");
         script = floor.GetComponent<BlitColors>();
