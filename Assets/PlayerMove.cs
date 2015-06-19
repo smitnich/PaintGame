@@ -4,11 +4,16 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour {
     public int moveSpeed = 1;
     public float deadzone = 0.4f;
+    Color[] colors = { Color.magenta, Color.cyan, Color.yellow };
     PlayerFire pf;
+    SetColor setColorScript;
+    int colorIndex = 0;
     public GameObject objectWithin;
 	// Use this for initialization
 	void Start () {
         pf = (PlayerFire)GetComponent<PlayerFire>();
+        setColorScript = (SetColor)GetComponent<SetColor>();
+        setColorScript.ChangeColor(colors[0]);
 	}
 	
 	void FixedUpdate () {
@@ -30,6 +35,24 @@ public class PlayerMove : MonoBehaviour {
             transform.LookAt(transform.position + direction, -Vector3.forward);
             if (temp.magnitude > 0.5)
                 pf.fire(direction);
+        }
+        checkColorSwap();
+    }
+    void checkColorSwap()
+    {
+        if (Input.GetButtonDown("SwapColorDown"))
+        {
+            colorIndex -= 1;
+            if (colorIndex < 0)
+                colorIndex += colors.Length;
+            setColorScript.ChangeColor(colors[colorIndex]);
+        }
+        if (Input.GetButtonDown("SwapColorUp"))
+        {
+            colorIndex += 1;
+            if (colorIndex >= colors.Length)
+                colorIndex -= colors.Length;
+            setColorScript.ChangeColor(colors[colorIndex]);
         }
     }
 }
