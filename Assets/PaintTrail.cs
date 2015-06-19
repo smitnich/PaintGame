@@ -6,6 +6,7 @@ public class PaintTrail : MonoBehaviour {
     GameObject floor;
     BlitColors script;
     Vector3 lastPosition;
+    bool firstUpdate = true;
     int size;
 	// Use this for initialization
 	void Start () {
@@ -14,11 +15,17 @@ public class PaintTrail : MonoBehaviour {
         floor = GameObject.Find("Floor");
         script = floor.GetComponent<BlitColors>();
         size = script.determineSize(extents.x);
-        lastPosition = transform.position;
 	}
 	
 	void FixedUpdate () {
-        script.setColor(transform.position, lastPosition, color, size);
+        if (firstUpdate)
+        {
+            lastPosition = transform.position;
+            firstUpdate = false;
+            return;
+        }
+        if (script != null)
+            script.setColor(transform.position, lastPosition, color, size);
         lastPosition = transform.position;
 	}
 }
