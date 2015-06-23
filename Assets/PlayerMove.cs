@@ -4,7 +4,8 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour {
     public int moveSpeed = 1;
     public float deadzone = 0.4f;
-    Color[] colors = { Color.magenta, Color.cyan, Color.yellow };
+    //Color[] colors = { Color.magenta, Color.cyan, Color.yellow };
+    Color[] colors = { Color.red, Color.blue, Color.yellow };
     PlayerFire pf;
     SetColor setColorScript;
     int colorIndex = 0;
@@ -22,7 +23,7 @@ public class PlayerMove : MonoBehaviour {
         Vector2 temp = new Vector2(horiz, vert);
         Vector3 objSize = objectWithin.GetComponent<Renderer>().bounds.size;
         transform.position += new Vector3(horiz,vert,0)*Time.deltaTime*moveSpeed;
-        transform.LookAt(transform.position + new Vector3(horiz, vert, 0.0f).normalized, -Vector3.forward);
+        transform.LookAt(transform.position + new Vector3(horiz, vert, 0.0f).normalized, Vector3.forward);
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, objectWithin.transform.position.x - objSize.x / 2, objectWithin.transform.position.x + objSize.x / 2),
                                 Mathf.Clamp(transform.position.y, objectWithin.transform.position.y - objSize.y / 2, objectWithin.transform.position.y + objSize.y / 2),
                                 transform.position.z);

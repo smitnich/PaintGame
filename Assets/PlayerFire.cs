@@ -16,7 +16,7 @@ public class PlayerFire : MonoBehaviour {
             GameObject newBullet = Instantiate(bullet);
             newBullet.GetComponent<SetColor>().color = GetComponent<SetColor>().color;
             newBullet.GetComponent<Rigidbody2D>().velocity = (direction * speed);
-            newBullet.GetComponent<Rigidbody2D>().position = GetComponent<Rigidbody2D>().position;
+            newBullet.GetComponent<Rigidbody2D>().position = transform.position;
             BulletCollision bulletScript = newBullet.GetComponent<BulletCollision>();
             bulletScript.damage = damage;
             bulletScript.isPlayerBullet = true;
