@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class BlitColors : MonoBehaviour {
@@ -8,12 +9,13 @@ public class BlitColors : MonoBehaviour {
     public Color firstColor = Color.white;
     Color[] colors;
     Texture2D texture;
-    float width;
-    float height;
-    Vector2 start;
-    Vector2 end;
+    public float width;
+    public float height;
+    public Vector2 start;
+    public Vector2 end;
+    bool updateRequired = false;
 	// Use this for initialization
-	void Start () {
+	public void Init (Color firstColor, Renderer parentRenderer) {
         Vector3 size = GetComponent<Collider>().bounds.size;
         width = Mathf.RoundToInt(size.x);
         height = Mathf.RoundToInt(size.y);
@@ -26,128 +28,33 @@ public class BlitColors : MonoBehaviour {
         for (int i = 0; i < horizPixels * vertPixels; i++)
             colors[i] = firstColor;
         texture = new Texture2D(horizPixels, vertPixels);
+        GetComponent<Renderer>().material = parentRenderer.material;
         GetComponent<Renderer>().material.mainTexture = texture;
 	}
-    // Update is called once per frame
-    void LateUpdate()
+    public void BlitUpdate()
     {
+        if (!updateRequired)
+            return;
         texture.SetPixels(colors);
         texture.Apply();
+        updateRequired = false;
     }
-    public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size, int absorbStrength)
-    {
-        float x = initPos.x;
-        float y = initPos.y;
-        if (x < start.x || x > end.x)
-            return;
-        if (y < start.y || y > end.y)
-            return;
-        float xPos = x - start.x;
-        float yPos = y - start.y;
-        int xPixel = Mathf.RoundToInt(xPos * horizPixels/width);
-        int yPixel = Mathf.RoundToInt(yPos * vertPixels / height);
-        int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * horizPixels / width);
-        int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * vertPixels / height);
-        SetPixelCircle(horizPixels-xPixel, vertPixels-yPixel, size/2, color, absorbStrength);
-        DrawLine(horizPixels - xPixel, vertPixels - yPixel, horizPixels - xPixelEnd, vertPixels - yPixelEnd, size, color, absorbStrength);
-    }
-    public void SetPixelCircle(int xPos, int yPos, int radius, Color color, int absorbStrength)
-    {
-        int squaredRadius = radius*radius;
-        for (int x = xPos - radius; x <= xPos + radius; x++)
-        {
-            for (int y = yPos - radius; y <= yPos + radius; y++)
-            {
-                if (((x + y * horizPixels) >= (horizPixels * vertPixels)) || (x+y*horizPixels < 0))
-                    continue;
-                int xDist = Mathf.Abs(x-xPos);
-                int yDist = Mathf.Abs(y-yPos);
-                if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
-                {
-                    if (absorbStrength == 0)
-                        setPixel(x, y, color);
-                    else
-                        absorbPixel(x, y, absorbStrength);
-                }
-            }
-        }
-    }
-    void absorbPixel(int x, int y, int absorbStrength) {
-        if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
-            return;
-        Color tmpColor = colors[x + y * horizPixels];
-        tmpColor.r += Mathf.Min((float) (absorbStrength/255f),1.0f-tmpColor.r);
-        tmpColor.g += Mathf.Min((float) (absorbStrength/255f),1.0f-tmpColor.g);
-        tmpColor.b += Mathf.Min((float) (absorbStrength/255f),1.0f-tmpColor.b);
-        colors[x + y * horizPixels] = tmpColor;
-    }
-    //Determine the radius in terms of pixels of the object with horizontal size of objSize
-    public int determineSize(float objSize)
-    {
-        return Mathf.RoundToInt(objSize * horizPixels / width)*2;
-    }
-    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color, int absorbStrength)
-    {
-        double xSlope = ((double)(xEnd - xStart)/(yEnd - yStart));
-        if (double.IsNaN(xSlope) || double.IsInfinity(xSlope))
-        {
-            xSlope = 0;
-        }
-        if (yStart > yEnd)
-        {
-            int temp = yStart;
-            yStart = yEnd;
-            yEnd = temp;
-            temp = xStart;
-            xStart = xEnd;
-            xEnd = temp;
-        }
-        for (int i = yStart; i <= yEnd; i++)
-        {            
-            for (int j = -radius / 2; j <= radius / 2; j++)
-            {
-                if (absorbStrength == 0)
-                    setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart)*xSlope))+j,i, color);
-                else
-                    absorbPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, absorbStrength);
-            }
-        }
-    }
-    public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color, int absorbStrength)
-    {
-        double ySlope = ((double)(yEnd - yStart) / (xEnd - xStart));
-        if (ySlope > 1 || ySlope < -1)
-        {
-            DrawLineY(xStart, yStart, xEnd, yEnd, radius, color, absorbStrength);
-        }
-        if (double.IsNaN(ySlope) || double.IsInfinity(ySlope))
-        {
-            ySlope = 0;
-        }
-        if (xStart > xEnd)
-        {
-            int temp = xStart;
-            xStart = xEnd;
-            xEnd = temp;
-            temp = yStart;
-            yStart = yEnd;
-            yEnd = temp;
-        }
-        for (int i = xStart; i <= xEnd; i++)
-        {
-            for (int j = -radius / 2; j <= radius / 2; j++)
-            {
-                if (absorbStrength == 0)
-                    setPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, color);
-                else
-                    absorbPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, absorbStrength);
-            }
-        }
-    }
-    void setPixel(int x, int y, Color color)
+    public void setPixel(int x, int y, Color color)
     {
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
             return;
         colors[x + y * horizPixels] = color;
+        updateRequired = true;
+    }
+    public void absorbPixel(int x, int y, int absorbStrength)
+    {
+        if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
+            return;
+        Color tmpColor = colors[x + y * horizPixels];
+        tmpColor.r += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.r);
+        tmpColor.g += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.g);
+        tmpColor.b += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.b);
+        colors[x + y * horizPixels] = tmpColor;
+        updateRequired = true;
     }
 }

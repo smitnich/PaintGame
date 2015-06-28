@@ -6,7 +6,7 @@ public class PaintTrail : MonoBehaviour
     public int absorbStrength = 0;
     Color color;
     GameObject floor;
-    BlitColors script;
+    FloorManager script;
     Vector3 lastPosition;
     bool firstUpdate = true;
     int size;
@@ -14,7 +14,7 @@ public class PaintTrail : MonoBehaviour
     void Start()
     {
         floor = GameObject.Find("Floor");
-        script = floor.GetComponent<BlitColors>();
+        script = floor.GetComponent<FloorManager>();
     }
 
     void FixedUpdate()
