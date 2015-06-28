@@ -28,9 +28,9 @@ public class FloorManager : MonoBehaviour {
         endY = startY + renderer.bounds.size.y;
         end.x = endX;
         end.y = endY;
+        floorsPerColumn = floorsPerRow / 2;
         planeWidthPixels  = sizeX / floorsPerRow;
         planeHeightPixels = sizeY / floorsPerColumn;
-        floorsPerColumn = floorsPerRow / 2;
         truePlaneWidth = Mathf.Abs((endX - startX) / floorsPerRow);
         truePlaneHeight = Mathf.Abs((endY - startY) / floorsPerColumn);
         width = endX - startX;
