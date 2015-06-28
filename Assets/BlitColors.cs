@@ -28,6 +28,7 @@ public class BlitColors : MonoBehaviour {
         for (int i = 0; i < horizPixels * vertPixels; i++)
             colors[i] = firstColor;
         texture = new Texture2D(horizPixels, vertPixels);
+        texture.wrapMode = TextureWrapMode.Clamp;
         GetComponent<Renderer>().material = parentRenderer.material;
         GetComponent<Renderer>().material.mainTexture = texture;
 	}
