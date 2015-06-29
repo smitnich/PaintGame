@@ -7,6 +7,7 @@ public class FloorManager : MonoBehaviour {
     int floorsPerColumn = 4;
     public int sizeX = 2048;
     public int sizeY = 1024;
+    public string imagePath = null;
     int planeWidthPixels;
     int planeHeightPixels;
     float truePlaneWidth;
@@ -16,6 +17,7 @@ public class FloorManager : MonoBehaviour {
     float height;
     Vector2 start;
     Vector2 end;
+    Texture2D baseImage;
     Renderer renderer;
 	// Use this for initialization
 	void Start () {
@@ -35,6 +37,7 @@ public class FloorManager : MonoBehaviour {
         truePlaneHeight = Mathf.Abs((endY - startY) / floorsPerColumn);
         width = endX - startX;
         height = endY - startY;
+        baseImage = Resources.Load("testImage", typeof(Texture2D)) as Texture2D;
         floors = new GameObject[floorsPerRow, floorsPerColumn];
         for (int i = 0; i < floorsPerRow; i++)
             for (int j = 0; j < floorsPerColumn; j++)
@@ -176,7 +179,8 @@ public class FloorManager : MonoBehaviour {
         BlitColors script = obj.AddComponent<BlitColors>();
         script.horizPixels = planeWidthPixels;
         script.vertPixels = planeHeightPixels;
-        script.Init(Color.magenta, renderer);
+        script.Init(Color.white, renderer);
+        script.loadPixels(baseImage, x, y);
         return obj;
     }
 

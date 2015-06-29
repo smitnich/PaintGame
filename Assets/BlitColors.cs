@@ -13,7 +13,7 @@ public class BlitColors : MonoBehaviour {
     public float height;
     public Vector2 start;
     public Vector2 end;
-    bool updateRequired = false;
+    bool updateRequired = true;
 	// Use this for initialization
 	public void Init (Color firstColor, Renderer parentRenderer) {
         Vector3 size = GetComponent<Collider>().bounds.size;
@@ -25,8 +25,6 @@ public class BlitColors : MonoBehaviour {
         width = end.x - start.x;
         height = end.y - start.y;
         colors = new Color[horizPixels * vertPixels];
-        for (int i = 0; i < horizPixels * vertPixels; i++)
-            colors[i] = firstColor;
         texture = new Texture2D(horizPixels, vertPixels);
         texture.wrapMode = TextureWrapMode.Clamp;
         GetComponent<Renderer>().material = parentRenderer.material;
@@ -40,22 +38,42 @@ public class BlitColors : MonoBehaviour {
         texture.Apply();
         updateRequired = false;
     }
+    public void loadPixels(Texture2D input, int x, int y)
+    {
+        try
+        {
+            if (input == null)
+            {
+                for (int i = 0; i < horizPixels * vertPixels; i++)
+                    colors[i] = firstColor;
+            }
+            else
+            {
+                colors = input.GetPixels(x * horizPixels, y * vertPixels, horizPixels, vertPixels);
+            }
+            BlitUpdate();
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.ToString());
+        }
+    }
     public void setPixel(int x, int y, Color color)
     {
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
             return;
-        colors[x + y * horizPixels] = color;
+        colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = color;
         updateRequired = true;
     }
     public void absorbPixel(int x, int y, int absorbStrength)
     {
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
             return;
-        Color tmpColor = colors[x + y * horizPixels];
+        Color tmpColor = colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels];
         tmpColor.r += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.r);
         tmpColor.g += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.g);
         tmpColor.b += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.b);
-        colors[x + y * horizPixels] = tmpColor;
+        colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = tmpColor;
         updateRequired = true;
     }
 }
