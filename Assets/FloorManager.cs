@@ -56,7 +56,8 @@ public class FloorManager : MonoBehaviour {
         if (floorX >= floorsPerRow || floorY >= floorsPerColumn || floorX < 0 || floorY < 0)
             return;
         GameObject floor = floors[floorsPerRow - 1 - floorX, floorsPerColumn - 1 - floorY];
-        floor.GetComponent<BlitColors>().setPixel(x % planeWidthPixels, y % planeHeightPixels, color);
+        if (floor != null)
+            floor.GetComponent<BlitColors>().setPixel(x % planeWidthPixels, y % planeHeightPixels, color);
     }
     void absorbPixel(int x, int y, int absorbStrength)
     {
@@ -65,9 +66,10 @@ public class FloorManager : MonoBehaviour {
         if (floorX >= floorsPerRow || floorY >= floorsPerColumn || floorX < 0 || floorY < 0)
             return;
         GameObject floor = floors[floorsPerRow-1-floorX,floorsPerColumn-1-floorY];
-        floor.GetComponent<BlitColors>().absorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength);
+        if (floor != null)
+            floor.GetComponent<BlitColors>().absorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength);
     }
-    public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size, int absorbStrength)
+    public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size)
     {
         float x = initPos.x;
         float y = initPos.y;
@@ -81,10 +83,11 @@ public class FloorManager : MonoBehaviour {
         int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
         int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * sizeX / width);
         int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * sizeY / height);
-        SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color, absorbStrength);
-        DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color, absorbStrength);
+        SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
+        if (endPos != null)
+            DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
     }
-    public void SetPixelCircle(int xPos, int yPos, int radius, Color color, int absorbStrength)
+    public void SetPixelCircle(int xPos, int yPos, int radius, Color color)
     {
         int squaredRadius = radius * radius;
         for (int x = xPos - radius; x <= xPos + radius; x++)
@@ -97,10 +100,7 @@ public class FloorManager : MonoBehaviour {
                 int yDist = Mathf.Abs(y - yPos);
                 if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
                 {
-                    if (absorbStrength == 0)
-                        setPixel(x, y, color);
-                    else
-                        absorbPixel(x, y, absorbStrength);
+                   setPixel(x, y, color);
                 }
             }
         }
@@ -110,7 +110,7 @@ public class FloorManager : MonoBehaviour {
     {
         return Mathf.RoundToInt(objSize * sizeX / width) * 2;
     }
-    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color, int absorbStrength)
+    public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double xSlope = ((double)(xEnd - xStart) / (yEnd - yStart));
         if (double.IsNaN(xSlope) || double.IsInfinity(xSlope))
@@ -130,19 +130,16 @@ public class FloorManager : MonoBehaviour {
         {
             for (int j = -radius / 2; j <= radius / 2; j++)
             {
-                if (absorbStrength == 0)
-                    setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
-                else
-                    absorbPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, absorbStrength);
+                setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
             }
         }
     }
-    public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color, int absorbStrength)
+    public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double ySlope = ((double)(yEnd - yStart) / (xEnd - xStart));
         if (ySlope > 1 || ySlope < -1)
         {
-            DrawLineY(xStart, yStart, xEnd, yEnd, radius, color, absorbStrength);
+            DrawLineY(xStart, yStart, xEnd, yEnd, radius, color);
         }
         if (double.IsNaN(ySlope) || double.IsInfinity(ySlope))
         {
@@ -161,10 +158,7 @@ public class FloorManager : MonoBehaviour {
         {
             for (int j = -radius / 2; j <= radius / 2; j++)
             {
-                if (absorbStrength == 0)
-                    setPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, color);
-                else
-                    absorbPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, absorbStrength);
+                setPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, color);
             }
         }
     }

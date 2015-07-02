@@ -3,7 +3,6 @@ using System.Collections;
 
 public class PaintTrail : MonoBehaviour
 {
-    public int absorbStrength = 0;
     Color color;
     GameObject floor;
     FloorManager script;
@@ -30,7 +29,7 @@ public class PaintTrail : MonoBehaviour
         }
         if (script != null)
         {
-                script.setColor(transform.position, lastPosition, color, size, absorbStrength);
+            script.setColor(transform.position, lastPosition, color, size);
         }
         lastPosition = transform.position;
     }
