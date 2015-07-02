@@ -1,41 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Chase : MonoBehaviour
-{
-    public GameObject toChase;
-    public int chaseWait = 2000;
+public class Chase : MonoBehaviour {
     public float speed = 5;
-    bool charging = false;
-    int timeStart = 0;
-    Vector3 velocity;
-    // Use this for initialization
-    void Start()
-    {
-        timeStart = (int)Time.time * 1000;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        if (charging)
-        {
-            transform.position += velocity * Time.deltaTime;
+    public GameObject toFollow;
+
+	// Use this for initialization
+	void Start () {
+        if (toFollow == null)
+            toFollow = GameObject.Find("Player");
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        if (toFollow == null)
             return;
-        }
-        if (toChase == null)
-            return;
-        Transform faceTo = toChase.transform;
+        Transform faceTo = toFollow.transform;
         if (faceTo.position != transform.position)
         {
             Vector3 lookPos = faceTo.position - transform.position;
             float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-        if (Time.time * 1000 >= timeStart + chaseWait)
-        {
-            charging = true;
-            velocity = transform.right * speed;
-        }
-
-    }
+        transform.position += transform.right * speed * Time.deltaTime;
+	}
 }
