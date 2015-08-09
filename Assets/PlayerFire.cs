@@ -19,6 +19,10 @@ public class PlayerFire : MonoBehaviour
     }
     public void fire(Vector3 direction)
     {
+        if (Input.GetButton("Absorb"))
+        {
+            return;
+        }
         long now = (long)(Time.time * 1000);
         if (now > (lastFired + fireRate))
         {
@@ -37,5 +41,10 @@ public class PlayerFire : MonoBehaviour
                 bulletScript.isPlayerBullet = true;
             }
         }
+    }
+    public void addEnergy(int[] input)
+    {
+        for (int i = 0; i < input.Length; i++)
+            energy[i] += input[i];
     }
 }

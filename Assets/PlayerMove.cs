@@ -18,6 +18,10 @@ public class PlayerMove : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+        if (Input.GetButton("Absorb"))
+        {
+            return;
+        }
         float horiz = Input.GetAxis("Horizontal");
         float vert = Input.GetAxis("Vertical");
         Vector2 temp = new Vector2(horiz, vert);

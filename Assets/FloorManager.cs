@@ -7,7 +7,6 @@ public class FloorManager : MonoBehaviour {
     int floorsPerColumn = 4;
     public int sizeX = 2048;
     public int sizeY = 1024;
-    public string imagePath = null;
     int planeWidthPixels;
     int planeHeightPixels;
     float truePlaneWidth;
@@ -59,15 +58,18 @@ public class FloorManager : MonoBehaviour {
         if (floor != null)
             floor.GetComponent<BlitColors>().setPixel(x % planeWidthPixels, y % planeHeightPixels, color);
     }
-    void absorbPixel(int x, int y, int absorbStrength)
+    int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
     {
+        int[] returnVal = {0,0,0};
         int floorX = x / planeWidthPixels;
         int floorY = y / planeHeightPixels;
         if (floorX >= floorsPerRow || floorY >= floorsPerColumn || floorX < 0 || floorY < 0)
-            return;
+            return returnVal;
         GameObject floor = floors[floorsPerRow-1-floorX,floorsPerColumn-1-floorY];
         if (floor != null)
-            floor.GetComponent<BlitColors>().absorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength);
+            return floor.GetComponent<BlitColors>().absorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength, result);
+        else
+            return returnVal;
     }
     public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size)
     {
@@ -84,8 +86,86 @@ public class FloorManager : MonoBehaviour {
         int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * sizeX / width);
         int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * sizeY / height);
         SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
-        if (endPos != null)
-            DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
+        DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
+    }
+    public int[] absorbCircleRadius(Vector3 pos, int radius, int absorbStrength)
+    {
+        int[] returnVal = {0,0,0};
+        float x = pos.x;
+        float y = pos.y;
+        if (x < start.x || x > end.x)
+            return returnVal;
+        if (y < start.y || y > end.y)
+            return returnVal;
+        float xPos = x - start.x;
+        float yPos = y - start.y;
+        int xPixel = Mathf.RoundToInt(xPos * sizeX / width);
+        int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
+        return AbsorbPixelPerimeter(sizeX - xPixel, sizeY - yPixel, radius, absorbStrength);
+    }
+    public int[] absorbCircle(Vector3 pos, int radius, int absorbStrength)
+    {
+        int[] returnVal = { 0, 0, 0 };
+        float x = pos.x;
+        float y = pos.y;
+        if (x < start.x || x > end.x)
+            return returnVal;
+        if (y < start.y || y > end.y)
+            return returnVal;
+        float xPos = x - start.x;
+        float yPos = y - start.y;
+        int xPixel = Mathf.RoundToInt(xPos * sizeX / width);
+        int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
+        return AbsorbPixelCircle(sizeX - xPixel, sizeY - yPixel, radius, absorbStrength);
+    }
+    public int[] AbsorbPixelCircle(int xPos, int yPos, int radius, int absorbStrength)
+    {
+        int[] returnVal = { 0, 0, 0 };
+        int squaredRadius = radius * radius;
+        for (int x = xPos - radius; x <= xPos + radius; x++)
+        {
+            for (int y = yPos - radius; y <= yPos + radius; y++)
+            {
+                if (((x + y * sizeX) >= (sizeX * sizeY)) || (x + y * sizeX < 0))
+                    continue;
+                int xDist = Mathf.Abs(x - xPos);
+                int yDist = Mathf.Abs(y - yPos);
+                if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
+                {
+                    absorbPixel(x, y, absorbStrength, returnVal);
+                }
+            }
+        }
+        return returnVal;
+    }
+    public int[] AbsorbPixelPerimeter(int x0, int y0, int radius, int absorbStrength)
+    {
+        int x = radius;
+        int y = 0;
+        int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=r, y=0
+        int[] result = {0,0,0};
+        while (x >= y)
+        {
+            absorbPixel(x + x0, y + y0, absorbStrength, result);
+            absorbPixel(y + x0, x + y0, absorbStrength, result);
+            absorbPixel(-x + x0, y + y0, absorbStrength, result);
+            absorbPixel(-y + x0, x + y0, absorbStrength, result);
+            absorbPixel(-x + x0, -y + y0, absorbStrength, result);
+            absorbPixel(-y + x0, -x + y0, absorbStrength, result);
+            absorbPixel(x + x0, -y + y0, absorbStrength, result);
+            absorbPixel(y + x0, -x + y0, absorbStrength, result);
+            y++;
+            if (decisionOver2 <= 0)
+            {
+                decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
+            }
+            else
+            {
+                x--;
+                decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
+            }
+        }
+        return result; 
     }
     public void SetPixelCircle(int xPos, int yPos, int radius, Color color)
     {

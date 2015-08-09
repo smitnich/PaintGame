@@ -19,7 +19,6 @@ public class BlitColors : MonoBehaviour {
         Vector3 size = GetComponent<Collider>().bounds.size;
         width = Mathf.RoundToInt(size.x);
         height = Mathf.RoundToInt(size.y);
-        Vector3 test = transform.position;
         start = (transform.position) - size / 2;
         end = (transform.position) + size / 2;
         width = end.x - start.x;
@@ -65,15 +64,30 @@ public class BlitColors : MonoBehaviour {
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = color;
         updateRequired = true;
     }
-    public void absorbPixel(int x, int y, int absorbStrength)
+    public int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
     {
+        float[] tmpChange = { 0f, 0f, 0f };
+        int[] change = { 0, 0, 0 };
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
-            return;
+            return change;
         Color tmpColor = colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels];
-        tmpColor.r += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.r);
-        tmpColor.g += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.g);
-        tmpColor.b += Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.b);
+        tmpChange[0] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.r);
+        tmpChange[1] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.g);
+        tmpChange[2] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.b);
+        tmpColor.r += tmpChange[0];
+        tmpColor.g += tmpChange[1];
+        tmpColor.b += tmpChange[2];
+        //Since adding colors moves towards white, we should consider the amount of red
+        //to be gathered to be the average of the green and blue added
+        change[0] = (int) ((tmpChange[1] + tmpChange[2])*255f) / 2;
+        change[1] = (int) ((tmpChange[0] + tmpChange[2])*255f) / 2;
+        change[2] = (int) ((tmpChange[0] + tmpChange[1])*255f) / 2;
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = tmpColor;
         updateRequired = true;
+        for (int i = 0; i < result.Length; i++)
+        {
+            result[i] += change[i];
+        }
+        return change;
     }
 }
