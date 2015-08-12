@@ -10,7 +10,7 @@ public class PlayerFire : MonoBehaviour
     public GameObject[] guns;
     long lastFired = 0;
     int[] energy;
-    public int startEnergy = 255;
+    public int startEnergy = 128;
     public void Start()
     {
         energy = new int[guns.Length];
@@ -46,5 +46,9 @@ public class PlayerFire : MonoBehaviour
     {
         for (int i = 0; i < input.Length; i++)
             energy[i] += input[i];
+    }
+    public int[] getEnergy()
+    {
+        return energy;
     }
 }
