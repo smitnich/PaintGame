@@ -88,7 +88,7 @@ public class FloorManager : MonoBehaviour {
         SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
         DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
     }
-    public int[] absorbCircleRadius(Vector3 pos, int radius, int absorbStrength)
+    public int[] absorbCirclePerimeter(Vector3 pos, int radius, int absorbStrength)
     {
         int[] returnVal = {0,0,0};
         float x = pos.x;
@@ -146,14 +146,18 @@ public class FloorManager : MonoBehaviour {
         int[] result = {0,0,0};
         while (x >= y)
         {
-            absorbPixel(x + x0, y + y0, absorbStrength, result);
-            absorbPixel(y + x0, x + y0, absorbStrength, result);
-            absorbPixel(-x + x0, y + y0, absorbStrength, result);
-            absorbPixel(-y + x0, x + y0, absorbStrength, result);
-            absorbPixel(-x + x0, -y + y0, absorbStrength, result);
-            absorbPixel(-y + x0, -x + y0, absorbStrength, result);
-            absorbPixel(x + x0, -y + y0, absorbStrength, result);
-            absorbPixel(y + x0, -x + y0, absorbStrength, result);
+            //Some pixels get missed; set the pixels directly next to them in order to avoid this
+            for (int xOff = -1; xOff <= 1; xOff++)
+            {
+                absorbPixel(x + x0 - xOff, y + y0, absorbStrength, result);
+                absorbPixel(y + x0 - xOff, x + y0, absorbStrength, result);
+                absorbPixel(-x + x0 - xOff, y + y0, absorbStrength, result);
+                absorbPixel(-y + x0 - xOff, x + y0, absorbStrength, result);
+                absorbPixel(-x + x0 - xOff, -y + y0, absorbStrength, result);
+                absorbPixel(-y + x0 - xOff, -x + y0, absorbStrength, result);
+                absorbPixel(x + x0 - xOff, -y + y0, absorbStrength, result);
+                absorbPixel(y + x0 - xOff, -x + y0, absorbStrength, result);
+            }
             y++;
             if (decisionOver2 <= 0)
             {
@@ -165,7 +169,7 @@ public class FloorManager : MonoBehaviour {
                 decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
             }
         }
-        return result; 
+        return result;
     }
     public void SetPixelCircle(int xPos, int yPos, int radius, Color color)
     {
