@@ -10,6 +10,7 @@ public class AbsorbColor : MonoBehaviour {
     int currentRadius = 5;
     int startRadius = 10;
     int radiusStep = 1;
+    int[] acummulatedEnergy = { 0, 0, 0 };
 	// Use this for initialization
 	void Start () {
         fireScript = GetComponent<PlayerFire>();
@@ -24,10 +25,14 @@ public class AbsorbColor : MonoBehaviour {
         {
             if (currentRadius > startRadius)
             {
-                result = floor.absorbCircleRadius(transform.position, currentRadius, absorbStrength);
+                result = floor.absorbCirclePerimeter(transform.position, currentRadius, absorbStrength);
                 float area = 2 * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
-                    result[i] = (int)(result[i] / (area));
+                {
+                    result[i] += acummulatedEnergy[i];
+                    acummulatedEnergy[i] = result[i] % (255 * 100);
+                    result[i] = (int)(result[i] / (255 * 100));
+                }
                 fireScript.addEnergy(result);
                 if (currentRadius < maxRadius)
                     currentRadius += radiusStep;
@@ -37,7 +42,7 @@ public class AbsorbColor : MonoBehaviour {
                 result = floor.absorbCircle(transform.position, currentRadius, absorbStrength);
                 float area = currentRadius * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
-                    result[i] = (int)(result[i] / (area));
+                    result[i] = (int)(result[i] / (255*100));
                 fireScript.addEnergy(result);
                 currentRadius += radiusStep;
             }
