@@ -77,11 +77,14 @@ public class BlitColors : MonoBehaviour {
         tmpColor.r += tmpChange[0];
         tmpColor.g += tmpChange[1];
         tmpColor.b += tmpChange[2];
+        tmpChange[0] = 1.0f - tmpChange[0];
+        tmpChange[1] = 1.0f - tmpChange[1];
+        tmpChange[2] = 1.0f - tmpChange[2];
         //Since adding colors moves towards white, we should consider the amount of red
-        //to be gathered to be the average of the green and blue added
-        change[0] = (int) ((tmpChange[1] + tmpChange[2])*255f) / 2;
-        change[1] = (int) ((tmpChange[0] + tmpChange[2])*255f) / 2;
-        change[2] = (int) ((tmpChange[0] + tmpChange[1])*255f) / 2;
+        //to be gathered to be the average of the green and blue removed
+        change[0] = Mathf.Max(Mathf.RoundToInt((tmpChange[0] - Mathf.Min(tmpChange[1],tmpChange[2])) * 255f),0);
+        change[2] = Mathf.Max(Mathf.RoundToInt((tmpChange[1] - Mathf.Min(tmpChange[0],tmpChange[2])) * 255f),0);
+        change[1] = Mathf.Max(Mathf.RoundToInt((tmpChange[2] - Mathf.Min(tmpChange[0],tmpChange[1])) * 255f),0);
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = tmpColor;
         updateRequired = true;
         for (int i = 0; i < result.Length; i++)
