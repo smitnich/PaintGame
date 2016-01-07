@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Displays the player's energy of a particular type
+/// </summary>
 public class AmmoBar : MonoBehaviour {
 
      float[] barDisplay; //current progress
@@ -11,26 +14,24 @@ public class AmmoBar : MonoBehaviour {
      {
          player = GameObject.Find("Player");
          barDisplay = new float[sliders.Length];
-         initTextures();
      }
-     public void initTextures()
-     {
-     }
+     /// <summary>
+     /// Update the GUI with the new energy value
+     /// </summary>
      void OnGUI() {
          for (int i = 0; i < sliders.Length; i++) {
             sliders[i].GetComponent<UnityEngine.UI.Slider>().value = barDisplay[i];
          }
      }
      
+     /// <summary>
+     /// Update the cached value of the player's energy
+     /// </summary>
      void Update() {
-         //for this example, the bar display is linked to the current time,
-         //however you would set this value based on your desired display
-         //eg, the loading progress, the player's health, or whatever.
          for (int i = 0; i < sliders.Length; i++)
          {
              int[] energy = player.GetComponent<PlayerFire>().getEnergy();
              barDisplay[i] = energy[i];
          }
- //        barDisplay = MyControlScript.staticHealth;
      }
  }

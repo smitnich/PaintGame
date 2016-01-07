@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Add to an object to make it die after a
+/// predetermined length of time
+/// </summary>
 public class LimitedLifetime : MonoBehaviour {
     public int lifeTime = 2000;
     int dieTime;
@@ -10,7 +13,10 @@ public class LimitedLifetime : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	/// <summary>
+    /// Checks if death has come for this object
+    /// </summary>
+    void Update () {
         if ((Time.time * 1000) >= dieTime)
             GameObject.Destroy(gameObject);
 	}

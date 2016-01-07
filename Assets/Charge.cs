@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Rotates towards the player for a period of time, then charges
+/// at them in a straight line until moving off of the level
+/// </summary>
 public class Charge : MonoBehaviour
 {
     public GameObject toChase;
@@ -17,6 +20,10 @@ public class Charge : MonoBehaviour
         timeStart = (int)Time.time * 1000;
     }
     // Update is called once per frame
+    /// <summary>
+    /// Either rotate towards the player, or charge towards
+    /// them
+    /// </summary>
     void Update()
     {
         if (charging)

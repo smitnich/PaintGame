@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Basic script which handles enemies colliding with the player
+/// and taking damage
+/// </summary>
 public class BasicEnemy : MonoBehaviour
 {
     public int health = 1;

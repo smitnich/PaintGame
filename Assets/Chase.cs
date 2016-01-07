@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Used to cause this object to follow a particular object
+/// </summary>
 public class Chase : MonoBehaviour {
     public float speed = 5;
     public GameObject toFollow;
@@ -12,7 +14,10 @@ public class Chase : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	/// <summary>
+    /// Follow the object!
+    /// </summary>
+    void Update () {
         if (toFollow == null)
             return;
         Transform faceTo = toFollow.transform;

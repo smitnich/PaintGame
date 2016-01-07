@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Handles checking for collisions with bullets,
+/// both for the player and enemies
+/// </summary>
 public class BulletCollision : MonoBehaviour {
     public int damage = 0;
     public bool isPlayerBullet = false;
@@ -8,6 +11,10 @@ public class BulletCollision : MonoBehaviour {
     {
 
     }
+    /// <summary>
+    /// Damage either the enemy or the player
+    /// </summary>
+    /// <param name="collision">The collision that led to this call</param>
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (isPlayerBullet)
@@ -28,9 +35,5 @@ public class BulletCollision : MonoBehaviour {
                 GameObject.Destroy(gameObject);
             }
         }
-    }
-    public void OnCollisionEnter2D(Collision2D collision)
-    {
-        OnTriggerEnter2D(collision.collider);
     }
 }

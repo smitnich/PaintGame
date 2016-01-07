@@ -64,6 +64,15 @@ public class BlitColors : MonoBehaviour {
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = color;
         updateRequired = true;
     }
+    /// <summary>
+    /// Absorb the color from a pixel
+    /// </summary>
+    /// <param name="x">X position of the pixel</param>
+    /// <param name="y">Y position of the pixel</param>
+    /// <param name="absorbStrength"></param>
+    /// <param name="result">The overall amount of energy taken from every pixel during this
+    /// overall operation</param>
+    /// <returns>An array containing the Red, Green and Blue change of the pixel</returns>
     public int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
     {
         float[] tmpChange = { 0f, 0f, 0f };
@@ -71,6 +80,7 @@ public class BlitColors : MonoBehaviour {
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
             return change;
         Color tmpColor = colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels];
+        //Get the amount to reduce each color componenet by
         tmpChange[0] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.r);
         tmpChange[1] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.g);
         tmpChange[2] = Mathf.Min((float)(absorbStrength / 255f), 1.0f - tmpColor.b);
@@ -85,6 +95,7 @@ public class BlitColors : MonoBehaviour {
         change[0] = Mathf.Max(Mathf.RoundToInt((tmpChange[0] - Mathf.Min(tmpChange[1],tmpChange[2])) * 255f),0);
         change[2] = Mathf.Max(Mathf.RoundToInt((tmpChange[1] - Mathf.Min(tmpChange[0],tmpChange[2])) * 255f),0);
         change[1] = Mathf.Max(Mathf.RoundToInt((tmpChange[2] - Mathf.Min(tmpChange[0],tmpChange[1])) * 255f),0);
+        //Set the color to the new color
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = tmpColor;
         updateRequired = true;
         for (int i = 0; i < result.Length; i++)

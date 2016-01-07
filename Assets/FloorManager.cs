@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+//This class is responsible for creating an array of floors to blit colors onto
+//This is necessary because needing to update a 1024*1024 takes way too long
+//to run at a decent framerate
+//By splitting the floor into multiple component, we only need to update the
+//texture of portions of the floor that were rendered to this frame
 public class FloorManager : MonoBehaviour {
     GameObject[,] floors;
     public int floorsPerRow = 8;
@@ -18,8 +22,11 @@ public class FloorManager : MonoBehaviour {
     Vector2 end;
     Texture2D baseImage;
     Renderer renderer;
-	// Use this for initialization
-	void Start () {
+	/// <summary>
+    /// Initialize the floorManager object and create the necessary floor
+    /// objects
+    /// </summary>
+    void Start () {
         renderer = GetComponent<Renderer>();
         startX = gameObject.transform.position.x-(renderer.bounds.size.x)/2;
         startY = gameObject.transform.position.y-(renderer.bounds.size.y)/2;
@@ -42,12 +49,21 @@ public class FloorManager : MonoBehaviour {
             for (int j = 0; j < floorsPerColumn; j++)
                 floors[i, j] = createFloor(i, j);
 	}
+    /// <summary>
+    /// Call BlitUpdate on all floors
+    /// </summary>
     void LateUpdate()
     {
         foreach (GameObject obj in floors) {
             obj.GetComponent<BlitColors>().BlitUpdate();
         }
     }
+    /// <summary>
+    /// Set an individual pixels color
+    /// </summary>
+    /// <param name="x">X position to set</param>
+    /// <param name="y">Y position to set</param>
+    /// <param name="color">Color to set to</param>
     void setPixel(int x, int y, Color color)
     {
         int floorX = x / planeWidthPixels;
@@ -58,6 +74,14 @@ public class FloorManager : MonoBehaviour {
         if (floor != null)
             floor.GetComponent<BlitColors>().setPixel(x % planeWidthPixels, y % planeHeightPixels, color);
     }
+    /// <summary>
+    /// Remove color from a given pixel
+    /// </summary>
+    /// <param name="x">X position to modify</param>
+    /// <param name="y">Y position to modify</param>
+    /// <param name="absorbStrength">Maximum amount of color to remove</param>
+    /// <param name="result">An array containing the amount of Red, Green, and Blue removed</param>
+    /// <returns></returns>
     int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
     {
         int[] returnVal = {0,0,0};
@@ -71,6 +95,13 @@ public class FloorManager : MonoBehaviour {
         else
             return returnVal;
     }
+    /// <summary>
+    /// Draw a line between two points, as well as a circle at the initial location
+    /// </summary>
+    /// <param name="initPos">Position to start drawing from</param>
+    /// <param name="endPos">Position to stop drawing at</param>
+    /// <param name="color">Color to set the modified pixels to</param>
+    /// <param name="size">Size of the line and circle</param>
     public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size)
     {
         float x = initPos.x;
@@ -88,6 +119,13 @@ public class FloorManager : MonoBehaviour {
         SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
         DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
     }
+    /// <summary>
+    /// Wrapper function for calling AbsorbPixelPerimeter
+    /// </summary>
+    /// <param name="pos">Position to absorb at</param>
+    /// <param name="radius">Distance from pos to absorb at</param>
+    /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
+    /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
     public int[] absorbCirclePerimeter(Vector3 pos, int radius, int absorbStrength)
     {
         int[] returnVal = {0,0,0};
@@ -103,6 +141,13 @@ public class FloorManager : MonoBehaviour {
         int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
         return AbsorbPixelPerimeter(sizeX - xPixel, sizeY - yPixel, radius, absorbStrength);
     }
+    /// <summary>
+    /// A wrapper function for AbsorbPixelCircle
+    /// </summary>
+    /// <param name="pos">Position to absorb at</param>
+    /// <param name="radius">Distance from pos to absorb within</param>
+    /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
+    /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
     public int[] absorbCircle(Vector3 pos, int radius, int absorbStrength)
     {
         int[] returnVal = { 0, 0, 0 };
@@ -118,6 +163,14 @@ public class FloorManager : MonoBehaviour {
         int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
         return AbsorbPixelCircle(sizeX - xPixel, sizeY - yPixel, radius, absorbStrength);
     }
+    /// <summary>
+    /// Remove color within a circle
+    /// </summary>
+    /// <param name="xPos">X position of the center of the circle</param>
+    /// <param name="yPos">Y position of the center of the circle</param>
+    /// <param name="radius">Radius to absorb within</param>
+    /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
+    /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
     public int[] AbsorbPixelCircle(int xPos, int yPos, int radius, int absorbStrength)
     {
         int[] returnVal = { 0, 0, 0 };
@@ -138,6 +191,14 @@ public class FloorManager : MonoBehaviour {
         }
         return returnVal;
     }
+    /// <summary>
+    /// Remove color along the perimeter of a circle
+    /// </summary>
+    /// <param name="xPos">X position of the center of the circle</param>
+    /// <param name="yPos">Y position of the center of the circle</param>
+    /// <param name="radius">Distance to absorb at</param>
+    /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
+    /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
     public int[] AbsorbPixelPerimeter(int x0, int y0, int radius, int absorbStrength)
     {
         int x = radius;
@@ -171,6 +232,13 @@ public class FloorManager : MonoBehaviour {
         }
         return result;
     }
+    /// <summary>
+    /// Set the color of pixels within the radius of a circle
+    /// </summary>
+    /// <param name="xPos">X position of the center of the circle</param>
+    /// <param name="yPos">Y position of the center of the circle</param>
+    /// <param name="radius">Radius to set within</param>
+    /// <param name="color">Color to set to</param>
     public void SetPixelCircle(int xPos, int yPos, int radius, Color color)
     {
         int squaredRadius = radius * radius;
@@ -189,11 +257,25 @@ public class FloorManager : MonoBehaviour {
             }
         }
     }
-    //Determine the radius in terms of pixels of the object with horizontal size of objSize
+    /// <summary>
+    // Determine the radius in terms of pixels of the object with horizontal size of objSize
+    // This scales the size of objects to the size of pixels
+    /// </summary>
+    /// <param name="objSize"></param>
+    /// <returns></returns>
     public int determineSize(float objSize)
     {
         return Mathf.RoundToInt(objSize * sizeX / width) * 2;
     }
+    /// <summary>
+    /// Draw a line with a vertical slope between two points
+    /// </summary>
+    /// <param name="xStart">X position to start drawing at</param>
+    /// <param name="yStart">Y position to start drawing at</param>
+    /// <param name="xEnd">X position to stop drawing at</param>
+    /// <param name="yEnd">Y position to stop drawing at</param>
+    /// <param name="radius">Width of the line</param>
+    /// <param name="color">The color of the line</param>
     public void DrawLineY(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double xSlope = ((double)(xEnd - xStart) / (yEnd - yStart));
@@ -218,6 +300,16 @@ public class FloorManager : MonoBehaviour {
             }
         }
     }
+    /// <summary>
+    /// Draw a line between two points
+    /// Calls the helper function DrawLineY if the line is vertical
+    /// </summary>
+    /// <param name="xStart"></param>
+    /// <param name="yStart"></param>
+    /// <param name="xEnd"></param>
+    /// <param name="yEnd"></param>
+    /// <param name="radius"></param>
+    /// <param name="color"></param>
     public void DrawLine(int xStart, int yStart, int xEnd, int yEnd, int radius, Color color)
     {
         double ySlope = ((double)(yEnd - yStart) / (xEnd - xStart));
@@ -246,6 +338,12 @@ public class FloorManager : MonoBehaviour {
             }
         }
     }
+    /// <summary>
+    /// Create a basic, flat floor using the built in Plane Primitive
+    /// </summary>
+    /// <param name="x">The X location of the floor within the FloorManager</param>
+    /// <param name="y">The X location of the floor within the FloorManager</param>
+    /// <returns>A plane with the proper pixels set for that portion of the floor</returns>
     GameObject createFloor(int x, int y)
     {
         GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -259,6 +357,13 @@ public class FloorManager : MonoBehaviour {
         script.vertPixels = planeHeightPixels;
         script.Init(Color.white, renderer);
         script.loadPixels(baseImage, x, y);
+        Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
+        Vector3[] verts = mesh.vertices;
+        for (int i = 11; i < 110; i++)
+            verts[i].y += 1;
+        mesh.vertices = verts;
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
         return obj;
     }
 

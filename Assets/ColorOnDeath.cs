@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Leave behind a circle of color when this object is destroyed
+/// </summary>
 public class ColorOnDeath : MonoBehaviour {
     FloorManager script;
     int size;
@@ -14,11 +17,9 @@ public class ColorOnDeath : MonoBehaviour {
         size = script.determineSize(extents.x);
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
+    /// <summary>
+    /// Leave a circle of color based on our size, color, and location
+    /// </summary>
     void OnDestroy()
     {
         if (script != null)

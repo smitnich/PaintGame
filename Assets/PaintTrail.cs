@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Use this for initialization
+/// <summary>
+/// Add to an object to have it leave behind a trail of
+/// a particular color
+/// </summary>
 public class PaintTrail : MonoBehaviour
 {
     Color color;
@@ -9,13 +14,17 @@ public class PaintTrail : MonoBehaviour
     Vector3 lastPosition;
     bool firstUpdate = true;
     int size;
-    // Use this for initialization
+
     void Start()
     {
         floor = GameObject.Find("Floor");
         script = floor.GetComponent<FloorManager>();
     }
 
+    /// <summary>
+    /// Lay down a trail between the previous position and
+    /// the new position every frane
+    /// </summary>
     void FixedUpdate()
     {
         color = GetComponent<SetColor>().color;

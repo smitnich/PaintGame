@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Check if the player has pressed the Absorb button,
+/// and if so change the color of the floor and increase
+/// the player's energy.
+/// The radius to absorb within increases over time up to a
+/// maximum limit
+/// </summary>
 public class AbsorbColor : MonoBehaviour {
     SetColor colorScript;
     PlayerFire fireScript;
@@ -18,9 +25,12 @@ public class AbsorbColor : MonoBehaviour {
         floor = tmpFloor.GetComponent<FloorManager>();
     }
 	// Update is called once per frame
-	void Update () {
+	/// <summary>
+    /// Check if the player wishes to absorb color from the floor
+    /// If not, reset the radius to the smallest size
+    /// </summary>
+    void Update () {
         int[] result = {0,0,0};
-        //blitScript.setColor(transform.position, transform.position, Color.white, 1, 0);
         if (Input.GetButton("Absorb"))
         {
             if (currentRadius > startRadius)

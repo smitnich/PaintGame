@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Delete any objects that have moved outside of the level
+/// </summary>
 public class Cleanup : MonoBehaviour {
     public GameObject objectWithin;
     public int range = 2;

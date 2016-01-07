@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles enemies firing bullets at a predetermined rate
+/// </summary>
 public class FireBullet : MonoBehaviour {
     public int speed = 5;
     public int damage = 1;
@@ -13,7 +16,10 @@ public class FireBullet : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	/// <summary>
+    /// Check if need to fire a bullet due to the fireDelay being finished
+    /// </summary>
+    void Update () {
 	    long now = (long) (Time.time * 1000);
         if (now > lastFired + fireDelay)
         {

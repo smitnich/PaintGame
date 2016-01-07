@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles the firing of bullets by the player as well as the players
+/// reserves of each color
+/// </summary>
 public class PlayerFire : MonoBehaviour
 {
     public long fireRate = 100;
@@ -17,6 +21,10 @@ public class PlayerFire : MonoBehaviour
         for (int i = 0; i < energy.Length; i++)
             energy[i] = startEnergy;
     }
+    /// <summary>
+    /// Fire a bullet object in a particular direction
+    /// </summary>
+    /// <param name="direction">The direction to fire the bullet in</param>
     public void fire(Vector3 direction)
     {
         if (Input.GetButton("Absorb"))
@@ -42,11 +50,20 @@ public class PlayerFire : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Add Red, Green, and/or Blue energy to the player
+    /// </summary>
+    /// <param name="input">The array of energy to add</param>
     public void addEnergy(int[] input)
     {
         for (int i = 0; i < input.Length; i++)
             energy[i] += input[i];
     }
+    
+    /// <summary>
+    /// Get the energy array of the player
+    /// </summary>
+    /// <returns>The array of energy in the order Red, Green, Blue</returns>
     public int[] getEnergy()
     {
         return energy;
