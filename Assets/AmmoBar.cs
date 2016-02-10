@@ -28,6 +28,8 @@ public class AmmoBar : MonoBehaviour {
      /// Update the cached value of the player's energy
      /// </summary>
      void Update() {
+        if (player == null)
+            return;
          for (int i = 0; i < sliders.Length; i++)
          {
              int[] energy = player.GetComponent<PlayerFire>().getEnergy();
