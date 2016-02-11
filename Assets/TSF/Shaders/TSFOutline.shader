@@ -59,7 +59,7 @@ Shader "TSF/BaseOutline1"
             {
                 v2f o;
 			    o.pos = v.vertex;
-			    o.pos.xyz += v.normal.xyz *_Outline*0.01;
+			    o.pos.xy += v.normal.xy *_Outline*0.01;
 			    o.pos = mul(UNITY_MATRIX_MVP, o.pos);
 			    return o;
             }
