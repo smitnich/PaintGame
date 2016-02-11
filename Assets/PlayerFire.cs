@@ -12,6 +12,7 @@ public class PlayerFire : MonoBehaviour
     public float speed = 1;
     public GameObject bullet;
     public GameObject[] guns;
+    int maxEnergy = 255;
     long lastFired = 0;
     int[] energy;
     public int startEnergy = 128;
@@ -57,7 +58,10 @@ public class PlayerFire : MonoBehaviour
     public void addEnergy(int[] input)
     {
         for (int i = 0; i < input.Length; i++)
+        {
             energy[i] += input[i];
+            energy[i] = Mathf.Min(energy[i], maxEnergy);
+        }
     }
     
     /// <summary>
