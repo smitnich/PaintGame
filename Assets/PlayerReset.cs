@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Reset the level when the player dies, and keep track of how many
@@ -13,6 +14,6 @@ public class PlayerReset : MonoBehaviour {
     void OnDestroy()
     {
         timesDied++;
-        Application.LoadLevel(Application.loadedLevel);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

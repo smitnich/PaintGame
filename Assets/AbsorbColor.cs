@@ -36,7 +36,7 @@ public class AbsorbColor : MonoBehaviour {
             if (currentRadius > startRadius)
             {
                 result = floor.absorbCirclePerimeter(transform.position, currentRadius, absorbStrength);
-                float area = 2 * currentRadius * Mathf.PI;
+                //float area = 2 * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
                 {
                     result[i] += acummulatedEnergy[i];
@@ -50,7 +50,7 @@ public class AbsorbColor : MonoBehaviour {
             else
             {
                 result = floor.absorbCircle(transform.position, currentRadius, absorbStrength);
-                float area = currentRadius * currentRadius * Mathf.PI;
+                //float area = currentRadius * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
                     result[i] = (int)(result[i] / (255*100));
                 fireScript.addEnergy(result);

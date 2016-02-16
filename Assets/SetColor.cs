@@ -7,12 +7,12 @@ using System.Collections;
 /// </summary>
 public class SetColor : MonoBehaviour {
     public Color color = Color.red;
-    Renderer renderer;
+    Renderer rend;
 	// Use this for initialization
 	void Start () {
-        renderer = GetComponent<Renderer>();
-        if (renderer != null)
-            renderer.material.color = color;
+        rend = GetComponent<Renderer>();
+        if (rend != null)
+            rend.material.color = color;
 	}
     /// <summary>
     /// Change the objects color
@@ -21,7 +21,7 @@ public class SetColor : MonoBehaviour {
     public void ChangeColor(Color _color)
     {
         this.color = _color;
-        if (renderer != null)
-            renderer.material.color = this.color;
+        if (rend != null)
+            rend.material.color = this.color;
     }
 }

@@ -39,8 +39,9 @@ public class PlayerFire : MonoBehaviour
             for (int i = 0; i < guns.Length; i++ )
             {
                 GameObject gun = guns[i];
-                if (energy[i]-- <= 0)
+                if (energy[i] <= 0)
                     continue;
+                energy[i]--;
                 GameObject newBullet = Instantiate(bullet);
                 newBullet.GetComponent<SetColor>().color = gun.GetComponent<SetColor>().color;
                 newBullet.GetComponent<Rigidbody2D>().velocity = (direction * speed);

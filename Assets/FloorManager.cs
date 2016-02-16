@@ -21,19 +21,19 @@ public class FloorManager : MonoBehaviour {
     Vector2 start;
     Vector2 end;
     Texture2D baseImage;
-    Renderer renderer;
+    Renderer rend;
 	/// <summary>
     /// Initialize the floorManager object and create the necessary floor
     /// objects
     /// </summary>
     void Start () {
-        renderer = GetComponent<Renderer>();
-        startX = gameObject.transform.position.x-(renderer.bounds.size.x)/2;
-        startY = gameObject.transform.position.y-(renderer.bounds.size.y)/2;
+        rend = GetComponent<Renderer>();
+        startX = gameObject.transform.position.x-(rend.bounds.size.x)/2;
+        startY = gameObject.transform.position.y-(rend.bounds.size.y)/2;
         start.x = startX;
         start.y = startY;
-        endX = startX + renderer.bounds.size.x;
-        endY = startY + renderer.bounds.size.y;
+        endX = startX + rend.bounds.size.x;
+        endY = startY + rend.bounds.size.y;
         end.x = endX;
         end.y = endY;
         floorsPerColumn = floorsPerRow / 2;
@@ -355,7 +355,7 @@ public class FloorManager : MonoBehaviour {
         BlitColors script = obj.AddComponent<BlitColors>();
         script.horizPixels = planeWidthPixels;
         script.vertPixels = planeHeightPixels;
-        script.Init(Color.white, renderer);
+        script.Init(Color.white, rend);
         script.loadPixels(baseImage, x, y);
         Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
         Vector3[] verts = mesh.vertices;
