@@ -14,7 +14,7 @@ public class Cleanup : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Vector3 size = objectWithin.GetComponent<Renderer>().bounds.size;
+        Vector3 size = objectWithin.GetComponent<Renderer>().bounds.size*2;
         if (this.transform.position.x < (objectWithin.transform.position.x-size.x/2)-range
          || this.transform.position.y < (objectWithin.transform.position.y-size.y/2)-range
          || this.transform.position.x > (objectWithin.transform.position.x+size.x/2)+range
