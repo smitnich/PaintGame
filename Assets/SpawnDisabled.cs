@@ -12,10 +12,12 @@ public class SpawnDisabled : MonoBehaviour {
     public bool disabled = true;
     public int timer = 1000;
     int freeTime = 0;
+    Color origColor;
 
 	// Use this for initialization
 	void Start () {
         colorScript = (SetColor)GetComponent<SetColor>();
+        origColor = colorScript.color;
         colorScript.ChangeColor(Color.black);
         lockPos = transform.position;
         freeTime = timer + ((int) Time.time * 1000);
@@ -27,6 +29,7 @@ public class SpawnDisabled : MonoBehaviour {
         if (Time.time * 1000 >= freeTime)
         {
             disabled = false;
+            colorScript.ChangeColor(origColor);
         }
         if (disabled)
         {

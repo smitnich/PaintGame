@@ -4,14 +4,15 @@ using System.Collections;
 /// <summary>
 /// Behavior for enemies which causes them to attempt to avoid the player
 /// </summary>
-public class avoidPlayer : MonoBehaviour
+public class AvoidPlayer : MonoBehaviour
 {
     public bool faceTowards = true;
     public GameObject player;
     // Use this for initialization
     void Start()
     {
-
+        if (player == null)
+            player = GameObject.Find("player");
     }
 
     // Update is called once per frame
@@ -27,7 +28,7 @@ public class avoidPlayer : MonoBehaviour
         {
             Vector3 lookPos = faceTo.position - transform.position;
             float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
-            if (faceTowards == false)
+            if (faceTowards)
             {
                 angle += 180;
             }

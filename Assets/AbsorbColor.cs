@@ -9,7 +9,6 @@ using System.Collections;
 /// maximum limit
 /// </summary>
 public class AbsorbColor : MonoBehaviour {
-    SetColor colorScript;
     PlayerFire fireScript;
     FloorManager floor;
     public int absorbStrength = 5;

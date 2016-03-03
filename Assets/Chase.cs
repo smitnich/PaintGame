@@ -27,6 +27,6 @@ public class Chase : MonoBehaviour {
             float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-        transform.position += transform.right * speed * Time.deltaTime;
+        //transform.position += transform.right * speed * Time.deltaTime;
 	}
 }

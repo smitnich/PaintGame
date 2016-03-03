@@ -23,10 +23,9 @@ public class FireBullet : MonoBehaviour {
 	    long now = (long) (Time.time * 1000);
         if (now > lastFired + fireDelay)
         {
-            GameObject newBullet = Instantiate(bullet);
+            GameObject newBullet = (GameObject) Instantiate(bullet, transform.position, transform.rotation);
+            newBullet.GetComponent<Rigidbody2D>().velocity = Vector3.up * speed;
             newBullet.GetComponent<SetColor>().color = GetComponent<SetColor>().color;
-            newBullet.GetComponent<Rigidbody2D>().velocity = transform.forward * speed;
-            newBullet.transform.position = transform.position;
             newBullet.GetComponent<BulletCollision>().damage = damage;
             lastFired = now;
         }
