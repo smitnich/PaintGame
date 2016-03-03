@@ -338,6 +338,50 @@ public class FloorManager : MonoBehaviour {
             }
         }
     }
+    Vector2 PixelToGameCoords(int x, int y)
+    {
+        float widthPerPixel = truePlaneWidth/planeWidthPixels;
+        float heightPerPixel = truePlaneHeight / planeHeightPixels;
+        //return new Vector2(startX + widthPerPixel * x, startY + heightPerPixel * y);
+        return new Vector2(endX - widthPerPixel * x, endY - heightPerPixel * y);
+    }
+    public void FillRaycast(Vector2 initPos, Vector2 endPos, GameObject obj)
+    {
+        float x = initPos.x;
+        float y = initPos.y;
+        if (x < start.x || x > end.x)
+            return;
+        if (y < start.y || y > end.y)
+            return;
+        float xPos = x - start.x;
+        float yPos = y - start.y;
+        int xPixel = Mathf.RoundToInt(xPos * sizeX / width);
+        int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
+        int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * sizeX / width);
+        int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * sizeY / height);
+        FillRaycastSquare(sizeX - xPixelEnd, sizeY - yPixelEnd, sizeX - xPixel, sizeY - yPixel, obj);
+    }
+    private bool checkObjectRaycast(int pixelX, int pixelY, GameObject obj)
+    {
+        Vector2 pos = PixelToGameCoords(pixelX, pixelY);
+        Collider2D coll = obj.GetComponent<Collider2D>();
+        if (coll.OverlapPoint(pos))
+        {
+            return true;
+        }
+        return false;
+    }
+    public void FillRaycastSquare(int xStart, int yStart, int xEnd, int yEnd, GameObject obj)
+    {
+        for (int x = xStart; x <= xEnd; x++)
+        {
+            for (int y = yStart; y <= yEnd; y++)
+            {
+                if (checkObjectRaycast(x, y, obj))
+                    setPixel(x, y, obj.GetComponent<SetColor>().color);
+            }
+        }
+    }
     /// <summary>
     /// Create a basic, flat floor using the built in Plane Primitive
     /// </summary>
@@ -345,7 +389,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="y">The X location of the floor within the FloorManager</param>
     /// <returns>A plane with the proper pixels set for that portion of the floor</returns>
     GameObject createFloor(int x, int y)
-    {
+        {
         GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Plane);
         obj.transform.position = new Vector3(x*truePlaneWidth+startX+truePlaneWidth/2, y*truePlaneHeight+startY+truePlaneHeight/2, gameObject.transform.position.z-1);
         //Need to scale the y axis to the current z axis, since we'll be rotation it later
