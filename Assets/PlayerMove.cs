@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour
         Vector2 temp = new Vector2(horiz, vert);
         Vector3 objSize = objectWithin.GetComponent<Renderer>().bounds.size;
         transform.position += new Vector3(horiz, vert, 0) * Time.deltaTime * moveSpeed;
-        transform.LookAt(transform.position + new Vector3(horiz, vert, 0.0f).normalized, Vector3.forward);
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(horiz, vert) * -Mathf.Rad2Deg);
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, objectWithin.transform.position.x - objSize.x / 2, objectWithin.transform.position.x + objSize.x / 2),
                                 Mathf.Clamp(transform.position.y, objectWithin.transform.position.y - objSize.y / 2, objectWithin.transform.position.y + objSize.y / 2),
                                 transform.position.z);
@@ -47,7 +47,7 @@ public class PlayerMove : MonoBehaviour
         if (horiz != 0.0f && vert != 0.0f)
         {
             Vector3 direction = new Vector3(horiz, vert, 0.0f).normalized;
-            transform.LookAt(transform.position + direction, -Vector3.forward);
+            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(horiz, vert) * -Mathf.Rad2Deg);
             if (temp.magnitude > 0.5)
                 pf.fire(direction);
         }

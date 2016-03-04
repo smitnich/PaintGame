@@ -8,12 +8,21 @@ using System.Collections;
 public class SetColor : MonoBehaviour {
     public Color color = Color.red;
     Renderer rend;
+    SpriteRenderer srend;
 	// Use this for initialization
 	void Start () {
-        rend = GetComponent<Renderer>();
-        if (rend != null)
-            rend.material.color = color;
-	}
+        srend = GetComponent<SpriteRenderer>();
+        if (srend != null)
+        {
+            srend.color = color;
+        }
+        else
+        {
+            rend = GetComponent<Renderer>();
+            if (rend != null)
+                rend.material.color = color;
+        }
+    }
     /// <summary>
     /// Change the objects color
     /// </summary>
@@ -23,5 +32,7 @@ public class SetColor : MonoBehaviour {
         this.color = _color;
         if (rend != null)
             rend.material.color = this.color;
+        else if (srend != null)
+            srend.color = this.color;
     }
 }
