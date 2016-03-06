@@ -11,9 +11,13 @@ public class PlayerFire : MonoBehaviour
     public int damage = 1;
     public float speed = 1;
     public GameObject bullet;
+    public GameObject missile;
+    public long missileFireRate = 2500;
+    public int missileDamage = 10;
     public GameObject[] guns;
     int maxEnergy = 255;
     long lastFired = 0;
+    long missileLastFired = 0;
     int[] energy;
     public int startEnergy = 128;
     public void Start()
@@ -45,12 +49,34 @@ public class PlayerFire : MonoBehaviour
                 GameObject newBullet = Instantiate(bullet);
                 newBullet.GetComponent<SetColor>().color = gun.GetComponent<SetColor>().color;
                 newBullet.GetComponent<Rigidbody2D>().velocity = (direction * speed);
-                newBullet.GetComponent<Rigidbody2D>().position = gun.transform.position;
+                newBullet.transform.position = gun.transform.position;
                 BulletCollision bulletScript = newBullet.GetComponent<BulletCollision>();
                 bulletScript.damage = damage;
                 bulletScript.isPlayerBullet = true;
             }
         }
+    }
+    public void fireMissile(Vector3 direction)
+    {
+        
+        if (Input.GetButton("Absorb"))
+        {
+            return;
+        }
+        long now = (long)(Time.time * 1000);
+        if (now > (missileLastFired + missileFireRate))
+        {
+            missileLastFired = now;
+            GameObject newMissile = Instantiate(missile);
+            newMissile.GetComponent<SetColor>().color = GetComponentInParent<SetColor>().color;
+            newMissile.GetComponent<Rigidbody2D>().velocity = (direction * speed);
+            newMissile.transform.position = guns[1].transform.position;
+            newMissile.transform.eulerAngles = guns[1].transform.eulerAngles;
+            BulletCollision bulletScript = newMissile.GetComponent<BulletCollision>();
+            bulletScript.damage = missileDamage;
+            bulletScript.isPlayerBullet = true;
+        }
+
     }
     /// <summary>
     /// Add Red, Green, and/or Blue energy to the player

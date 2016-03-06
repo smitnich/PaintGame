@@ -51,6 +51,10 @@ public class PlayerMove : MonoBehaviour
             if (temp.magnitude > 0.5)
                 pf.fire(direction);
         }
+        if (Input.GetAxis("Missile") != 0.0f)
+        {
+            pf.fireMissile(transform.up);
+        }
         checkColorSwap();
     }
     /// <summary>

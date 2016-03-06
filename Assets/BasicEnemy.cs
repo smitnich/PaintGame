@@ -11,6 +11,7 @@ public class BasicEnemy : MonoBehaviour
     public int speed = 5;
     public AudioSource deathSound;
     public bool leavePaintOnDeath = true;
+    public bool isBullet;
     FloorManager script;
     // Use this for initialization
     void Start()
@@ -24,16 +25,24 @@ public class BasicEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<Rigidbody2D>().velocity = transform.right * speed;
+        // A speed of -1 means to not modify speed in this script
+        if (speed != -1)
+            GetComponent<Rigidbody2D>().velocity = transform.right * speed;
     }
     public void damage(int damage)
     {
+        // A health value of -1 means that health should be ignored
+        if (health == -1)
+            return;
         health -= damage;
         if (health <= 0)
             die();
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        // Don't check for collisions with other bullets
+        if (isBullet)
+            return;
         PlayerMove playerScript = collision.gameObject.GetComponent<PlayerMove>();
         if (playerScript != null)
         {
@@ -41,7 +50,7 @@ public class BasicEnemy : MonoBehaviour
             GameObject.Destroy(gameObject);
         }
     }
-    private void die()
+    public void die()
     {
         if (deathSound != null)
             deathSound.Play();

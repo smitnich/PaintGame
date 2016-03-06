@@ -18,6 +18,12 @@ public class LimitedLifetime : MonoBehaviour {
     /// </summary>
     void Update () {
         if ((Time.time * 1000) >= dieTime)
-            GameObject.Destroy(gameObject);
+        {
+            BasicEnemy script = GetComponent<BasicEnemy>();
+            if (script != null)
+                script.die();
+            else
+                GameObject.Destroy(gameObject);
+        }
 	}
 }
