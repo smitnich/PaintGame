@@ -345,6 +345,14 @@ public class FloorManager : MonoBehaviour {
         //return new Vector2(startX + widthPerPixel * x, startY + heightPerPixel * y);
         return new Vector2(endX - widthPerPixel * x, endY - heightPerPixel * y);
     }
+    public Vector2 GameCoordsToPixel(float x, float y)
+    {
+        float xPos = x - start.x;
+        float yPos = y - start.y;
+        int xPixel = Mathf.RoundToInt(xPos * sizeX / width);
+        int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
+        return new Vector2(sizeX - xPixel, sizeY - yPixel);
+    }
     public void FillRaycast(Vector2 initPos, Vector2 endPos, GameObject obj)
     {
         float x = initPos.x;

@@ -20,8 +20,19 @@ public class DoExplosion : MonoBehaviour {
         size += expandRate * Time.deltaTime;
         transform.localScale = new Vector3(size, size, size);
         if (size >= finalRadius)
+        {
             GameObject.Destroy(gameObject);
-	}
+            GameObject floor = GameObject.Find("Floor");
+            if (floor == null)
+                return;
+            FloorManager script = floor.GetComponent<FloorManager>();
+            if (script == null)
+                return;
+            Vector2 pixels = script.GameCoordsToPixel(transform.position.x, transform.position.y);
+            Color color = GetComponent<SetColor>().color;
+            script.SetPixelCircle((int) pixels.x, (int) pixels.y, script.determineSize(finalRadius)/4, color);
+        }
+    }
     void OnCollisionEnter2D(Collision2D coll)
     {
         BasicEnemy be = coll.gameObject.GetComponent<BasicEnemy>();

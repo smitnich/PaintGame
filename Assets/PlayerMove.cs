@@ -55,6 +55,10 @@ public class PlayerMove : MonoBehaviour
         {
             pf.fireMissile(transform.up);
         }
+        if (Input.GetAxis("Bomb") != 0.0f)
+        {
+            GetComponent<Explode>().explode();
+        }
         checkColorSwap();
     }
     /// <summary>
