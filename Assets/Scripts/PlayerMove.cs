@@ -12,15 +12,15 @@ public class PlayerMove : MonoBehaviour
     //Color[] colors = { Color.magenta, Color.cyan, Color.yellow };
     Color[] colors = { Color.red, Color.blue, Color.yellow };
     PlayerFire pf;
-    SetColor setColorScript;
+    SetColor SetColorScript;
     int colorIndex = 0;
     public GameObject objectWithin;
     // Use this for initialization
     void Start()
     {
         pf = (PlayerFire)GetComponent<PlayerFire>();
-        setColorScript = (SetColor)GetComponent<SetColor>();
-        setColorScript.ChangeColor(colors[0]);
+        SetColorScript = (SetColor)GetComponent<SetColor>();
+        SetColorScript.ChangeColor(colors[0]);
     }
 
     /// <summary>
@@ -72,14 +72,14 @@ public class PlayerMove : MonoBehaviour
             colorIndex -= 1;
             if (colorIndex < 0)
                 colorIndex += colors.Length;
-            setColorScript.ChangeColor(colors[colorIndex]);
+            SetColorScript.ChangeColor(colors[colorIndex]);
         }
         if (Input.GetButtonDown("SwapColorUp"))
         {
             colorIndex += 1;
             if (colorIndex >= colors.Length)
                 colorIndex -= colors.Length;
-            setColorScript.ChangeColor(colors[colorIndex]);
+            SetColorScript.ChangeColor(colors[colorIndex]);
         }
     }
 }

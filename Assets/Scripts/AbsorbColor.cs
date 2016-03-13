@@ -34,7 +34,7 @@ public class AbsorbColor : MonoBehaviour {
         {
             if (currentRadius > startRadius)
             {
-                result = floor.absorbCirclePerimeter(transform.position, currentRadius, absorbStrength);
+                result = floor.AbsorbCirclePerimeter(transform.position, currentRadius, absorbStrength);
                 //float area = 2 * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
                 {
@@ -48,7 +48,7 @@ public class AbsorbColor : MonoBehaviour {
             }
             else
             {
-                result = floor.absorbCircle(transform.position, currentRadius, absorbStrength);
+                result = floor.AbsorbCircle(transform.position, currentRadius, absorbStrength);
                 //float area = currentRadius * currentRadius * Mathf.PI;
                 for (int i = 0; i < result.Length; i++)
                     result[i] = (int)(result[i] / (255*100));

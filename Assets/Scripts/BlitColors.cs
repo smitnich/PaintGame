@@ -57,7 +57,7 @@ public class BlitColors : MonoBehaviour {
             Debug.Log(e.ToString());
         }
     }
-    public void setPixel(int x, int y, Color color)
+    public void SetPixel(int x, int y, Color color)
     {
         if (x < 0 || y < 0 || x >= horizPixels || y >= vertPixels)
             return;
@@ -73,7 +73,7 @@ public class BlitColors : MonoBehaviour {
     /// <param name="result">The overall amount of energy taken from every pixel during this
     /// overall operation</param>
     /// <returns>An array containing the Red, Green and Blue change of the pixel</returns>
-    public int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
+    public int[] AbsorbPixel(int x, int y, int absorbStrength, int[] result)
     {
         float[] tmpChange = { 0f, 0f, 0f };
         int[] change = { 0, 0, 0 };

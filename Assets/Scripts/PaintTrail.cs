@@ -38,7 +38,7 @@ public class PaintTrail : MonoBehaviour
         }
         if (script != null)
         {
-            script.setColor(transform.position, lastPosition, color, size);
+            script.SetColor(transform.position, lastPosition, color, size);
         }
         lastPosition = transform.position;
     }

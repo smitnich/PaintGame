@@ -64,7 +64,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="x">X position to set</param>
     /// <param name="y">Y position to set</param>
     /// <param name="color">Color to set to</param>
-    void setPixel(int x, int y, Color color)
+    void SetPixel(int x, int y, Color color)
     {
         int floorX = x / planeWidthPixels;
         int floorY = y / planeHeightPixels;
@@ -72,7 +72,7 @@ public class FloorManager : MonoBehaviour {
             return;
         GameObject floor = floors[floorsPerRow - 1 - floorX, floorsPerColumn - 1 - floorY];
         if (floor != null)
-            floor.GetComponent<BlitColors>().setPixel(x % planeWidthPixels, y % planeHeightPixels, color);
+            floor.GetComponent<BlitColors>().SetPixel(x % planeWidthPixels, y % planeHeightPixels, color);
     }
     /// <summary>
     /// Remove color from a given pixel
@@ -82,7 +82,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="absorbStrength">Maximum amount of color to remove</param>
     /// <param name="result">An array containing the amount of Red, Green, and Blue removed</param>
     /// <returns></returns>
-    int[] absorbPixel(int x, int y, int absorbStrength, int[] result)
+    int[] AbsorbPixel(int x, int y, int absorbStrength, int[] result)
     {
         int[] returnVal = {0,0,0};
         int floorX = x / planeWidthPixels;
@@ -91,7 +91,7 @@ public class FloorManager : MonoBehaviour {
             return returnVal;
         GameObject floor = floors[floorsPerRow-1-floorX,floorsPerColumn-1-floorY];
         if (floor != null)
-            return floor.GetComponent<BlitColors>().absorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength, result);
+            return floor.GetComponent<BlitColors>().AbsorbPixel(x % planeWidthPixels, y % planeHeightPixels, absorbStrength, result);
         else
             return returnVal;
     }
@@ -102,7 +102,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="endPos">Position to stop drawing at</param>
     /// <param name="color">Color to set the modified pixels to</param>
     /// <param name="size">Size of the line and circle</param>
-    public void setColor(Vector3 initPos, Vector3 endPos, Color color, int size)
+    public void SetColor(Vector3 initPos, Vector3 endPos, Color color, int size)
     {
         float x = initPos.x;
         float y = initPos.y;
@@ -126,7 +126,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="radius">Distance from pos to absorb at</param>
     /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
     /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
-    public int[] absorbCirclePerimeter(Vector3 pos, int radius, int absorbStrength)
+    public int[] AbsorbCirclePerimeter(Vector3 pos, int radius, int absorbStrength)
     {
         int[] returnVal = {0,0,0};
         float x = pos.x;
@@ -148,7 +148,7 @@ public class FloorManager : MonoBehaviour {
     /// <param name="radius">Distance from pos to absorb within</param>
     /// <param name="absorbStrength">Maximum amount of color allowed to be removed</param>
     /// <returns>An array containing the amount of Red, Green, and Blue removed</returns>
-    public int[] absorbCircle(Vector3 pos, int radius, int absorbStrength)
+    public int[] AbsorbCircle(Vector3 pos, int radius, int absorbStrength)
     {
         int[] returnVal = { 0, 0, 0 };
         float x = pos.x;
@@ -185,7 +185,7 @@ public class FloorManager : MonoBehaviour {
                 int yDist = Mathf.Abs(y - yPos);
                 if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
                 {
-                    absorbPixel(x, y, absorbStrength, returnVal);
+                    AbsorbPixel(x, y, absorbStrength, returnVal);
                 }
             }
         }
@@ -210,14 +210,14 @@ public class FloorManager : MonoBehaviour {
             //Some pixels get missed; set the pixels directly next to them in order to avoid this
             for (int xOff = -1; xOff <= 1; xOff++)
             {
-                absorbPixel(x + x0 - xOff, y + y0, absorbStrength, result);
-                absorbPixel(y + x0 - xOff, x + y0, absorbStrength, result);
-                absorbPixel(-x + x0 - xOff, y + y0, absorbStrength, result);
-                absorbPixel(-y + x0 - xOff, x + y0, absorbStrength, result);
-                absorbPixel(-x + x0 - xOff, -y + y0, absorbStrength, result);
-                absorbPixel(-y + x0 - xOff, -x + y0, absorbStrength, result);
-                absorbPixel(x + x0 - xOff, -y + y0, absorbStrength, result);
-                absorbPixel(y + x0 - xOff, -x + y0, absorbStrength, result);
+                AbsorbPixel(x + x0 - xOff, y + y0, absorbStrength, result);
+                AbsorbPixel(y + x0 - xOff, x + y0, absorbStrength, result);
+                AbsorbPixel(-x + x0 - xOff, y + y0, absorbStrength, result);
+                AbsorbPixel(-y + x0 - xOff, x + y0, absorbStrength, result);
+                AbsorbPixel(-x + x0 - xOff, -y + y0, absorbStrength, result);
+                AbsorbPixel(-y + x0 - xOff, -x + y0, absorbStrength, result);
+                AbsorbPixel(x + x0 - xOff, -y + y0, absorbStrength, result);
+                AbsorbPixel(y + x0 - xOff, -x + y0, absorbStrength, result);
             }
             y++;
             if (decisionOver2 <= 0)
@@ -252,7 +252,7 @@ public class FloorManager : MonoBehaviour {
                 int yDist = Mathf.Abs(y - yPos);
                 if ((xDist * xDist) + (yDist * yDist) <= squaredRadius)
                 {
-                   setPixel(x, y, color);
+                   SetPixel(x, y, color);
                 }
             }
         }
@@ -296,7 +296,7 @@ public class FloorManager : MonoBehaviour {
         {
             for (int j = -radius / 2; j <= radius / 2; j++)
             {
-                setPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
+                SetPixel(Mathf.RoundToInt((float)(xStart + (i - yStart) * xSlope)) + j, i, color);
             }
         }
     }
@@ -334,7 +334,7 @@ public class FloorManager : MonoBehaviour {
         {
             for (int j = -radius / 2; j <= radius / 2; j++)
             {
-                setPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, color);
+                SetPixel(i, Mathf.RoundToInt((float)(yStart + (i - xStart) * ySlope)) + j, color);
             }
         }
     }
@@ -369,7 +369,7 @@ public class FloorManager : MonoBehaviour {
         int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * sizeY / height);
         FillRaycastSquare(sizeX - xPixelEnd, sizeY - yPixelEnd, sizeX - xPixel, sizeY - yPixel, obj);
     }
-    private bool checkObjectRaycast(int pixelX, int pixelY, GameObject obj)
+    private bool CheckObjectRaycast(int pixelX, int pixelY, GameObject obj)
     {
         Vector2 pos = PixelToGameCoords(pixelX, pixelY);
         Collider2D coll = obj.GetComponent<Collider2D>();
@@ -385,8 +385,8 @@ public class FloorManager : MonoBehaviour {
         {
             for (int y = yStart; y <= yEnd; y++)
             {
-                if (checkObjectRaycast(x, y, obj))
-                    setPixel(x, y, obj.GetComponent<SetColor>().color);
+                if (CheckObjectRaycast(x, y, obj))
+                    SetPixel(x, y, obj.GetComponent<SetColor>().color);
             }
         }
     }
