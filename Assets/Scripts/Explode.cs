@@ -19,6 +19,7 @@ public class Explode : MonoBehaviour {
         lastExplode = now;
         GameObject obj = Instantiate(explosion);
         obj.transform.position = gameObject.transform.position;
+        obj.GetComponent<SetColor>().color = GetComponent<SetColor>().color;
         obj.GetComponent<DoExplosion>().StartExplosion(radius, isPlayer);
 	}
 }
