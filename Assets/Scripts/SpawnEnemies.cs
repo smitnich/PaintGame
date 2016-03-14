@@ -17,6 +17,7 @@ public class SpawnEnemies : MonoBehaviour {
     bool spawning = false;
     Vector3 spawnAt;
     GameObject player;
+    public float minDistanceFromPlayer = 30.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -36,7 +37,17 @@ public class SpawnEnemies : MonoBehaviour {
 	
     Vector3 getRandomLocation()
     {
-        return new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), -10);
+        Vector3 location;
+        Vector3 playerLocation = player.transform.position;
+        for (int i = 0; i < 100; i++)
+        {
+            location = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), -10);
+            if (Vector3.Distance(location, playerLocation) > minDistanceFromPlayer)
+            {
+                return location;
+            }
+        }
+        return new Vector3(0, 0, 0);
     }
     void spawnObject()
     {
