@@ -8,9 +8,9 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour
 {
     public int moveSpeed = 1;
-    public float deadzone = 0.4f;
-    //Color[] colors = { Color.magenta, Color.cyan, Color.yellow };
-    Color[] colors = { Color.red, Color.blue, Color.yellow };
+    public float deadzone = 0.2f;
+    public float fireDeadzone = 0.7f;
+    Color[] colors = { Color.red, Color.blue, Color.green };
     PlayerFire pf;
     SetColor SetColorScript;
     int colorIndex = 0;
@@ -47,8 +47,9 @@ public class PlayerMove : MonoBehaviour
         if (horiz != 0.0f && vert != 0.0f)
         {
             Vector3 direction = new Vector3(horiz, vert, 0.0f).normalized;
-            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(horiz, vert) * -Mathf.Rad2Deg);
-            if (temp.magnitude > 0.5)
+            if (temp.magnitude > deadzone)
+                transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(horiz, vert) * -Mathf.Rad2Deg);
+            if (temp.magnitude > fireDeadzone)
                 pf.fire(direction);
         }
         if (Input.GetAxis("Missile") != 0.0f)
