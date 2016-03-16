@@ -64,6 +64,12 @@ public class BlitColors : MonoBehaviour {
         colors[(horizPixels-x-1) + (vertPixels-y-1) * horizPixels] = color;
         updateRequired = true;
     }
+    public void SetPixels(Color[] newColors)
+    {
+        colors = newColors;
+        updateRequired = true;
+    }
+
     /// <summary>
     /// Absorb the color from a pixel
     /// </summary>
