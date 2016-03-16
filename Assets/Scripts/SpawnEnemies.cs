@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class SpawnEnemies : MonoBehaviour {
 
-    public GameObject[] spawnObjects = { null };
-    public int spawnRate = 4000;
-    public int spawnNumber = 10;
-    public int spawnDelay = 100;
+    [System.Serializable]
+    public class SpawnObject : PropertyDrawer
+    {
+        public int spawnRate = 4000;
+        public int spawnNumber = 10;
+        public int spawnDelay = 100;
+        public GameObject toSpawn = null;
+    }
+    private SpawnObject currentlySpawning = null;
+    public SpawnObject[] spawnObjects = { null };
     public GameObject spawnWithin = null;
     float maxX = 0;
     float minX = 0;
@@ -19,8 +26,8 @@ public class SpawnEnemies : MonoBehaviour {
     GameObject player;
     public float minDistanceFromPlayer = 30.0f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         if (spawnWithin == null) {
             spawnWithin = GameObject.Find("Floor");
         }
@@ -51,27 +58,32 @@ public class SpawnEnemies : MonoBehaviour {
     }
     void spawnObject()
     {
-        GameObject newObj = Instantiate(spawnObjects[0]);
+        GameObject newObj = Instantiate(currentlySpawning.toSpawn);
         newObj.transform.position = spawnAt;
     }
     // Update is called once per frame
     void Update () {
         int curTime = (int)(Time.time * 1000);
+        if (currentlySpawning == null)
+        {
+            currentlySpawning = spawnObjects[Random.Range(0, spawnObjects.Length)];
+        }
         if (spawning)
         {
-            if (curTime >= spawnDelay + lastSpawnTime)
+            if (curTime >= currentlySpawning.spawnDelay + lastSpawnTime)
             {
                 spawnObject();
                 spawnCount++;
-                if (spawnCount >= spawnNumber)
+                if (spawnCount >= currentlySpawning.spawnNumber)
                 {
                     spawning = false;
                     spawnCount = 0;
+                    currentlySpawning = null;
                 }
                 lastSpawnTime = curTime;
             }
         }
-        else if (curTime >= spawnRate + lastSpawnTime)
+        else if (curTime >= currentlySpawning.spawnRate + lastSpawnTime)
         {
             spawnAt = getRandomLocation();
             spawning = true;
