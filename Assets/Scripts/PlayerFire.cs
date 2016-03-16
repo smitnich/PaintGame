@@ -72,6 +72,7 @@ public class PlayerFire : MonoBehaviour
             newMissile.GetComponent<Rigidbody2D>().velocity = (direction * speed);
             newMissile.transform.position = guns[1].transform.position;
             newMissile.transform.eulerAngles = guns[1].transform.eulerAngles;
+            newMissile.GetComponent<BulletCollision>().isPlayerBullet = true;
             BulletCollision bulletScript = newMissile.GetComponent<BulletCollision>();
             bulletScript.damage = missileDamage;
             bulletScript.isPlayerBullet = true;

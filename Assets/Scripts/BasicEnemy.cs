@@ -12,11 +12,14 @@ public class BasicEnemy : MonoBehaviour
     public AudioSource deathSound;
     public bool leavePaintOnDeath = true;
     public bool isBullet;
+    public int points = 10;
+    private HandleScore handler;
     FloorManager script;
     // Use this for initialization
     void Start()
     {
         GameObject floor = GameObject.Find("Floor");
+        handler = GameObject.Find("EventSystem").GetComponent<HandleScore>();
         Vector3 extents = GetComponent<Renderer>().bounds.extents;
         script = floor.GetComponent<FloorManager>();
         script = floor.GetComponent<FloorManager>();
@@ -56,6 +59,8 @@ public class BasicEnemy : MonoBehaviour
             deathSound.Play();
         if (leavePaintOnDeath)
             leavePaint();
+        if (!isBullet)
+            handler.IncreaseScore(points);
         Destroy(gameObject);
     }
     private void leavePaint()
@@ -65,9 +70,9 @@ public class BasicEnemy : MonoBehaviour
         float length = Mathf.Max(b.max.x - b.min.x, b.max.y - b.min.y) / 2;
         Vector2 start = new Vector2(b.center.x - length, b.center.y - length);
         Vector2 end = new Vector2(b.center.x + length, b.center.y + length);
-        script.FillRaycast(start, end, gameObject);
         // Iterate across every pixel within this range, and check via raycast if the object's collider
         // is within that pixel
         // If so, color that pixel to the proper color
+        script.FillRaycast(start, end, gameObject);
     }
 }
