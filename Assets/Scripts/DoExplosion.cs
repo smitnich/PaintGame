@@ -30,7 +30,7 @@ public class DoExplosion : MonoBehaviour {
                 return;
             Vector2 pixels = script.GameCoordsToPixel(transform.position.x, transform.position.y);
             Color color = GetComponent<SetColor>().color;
-            script.SetPixelCircle((int) pixels.x, (int) pixels.y, script.determineSize(finalRadius)/4, color);
+            script.SetPixelCircle((int) pixels.x, (int) pixels.y, script.determineSize(GetComponent<Renderer>().bounds.extents.x/2), color);
         }
     }
     void OnCollisionEnter2D(Collision2D coll)
