@@ -12,6 +12,7 @@ public class PaintTrail : MonoBehaviour
     GameObject floor;
     FloorManager script;
     Vector3 lastPosition;
+    public bool erase = false;
     bool firstUpdate = true;
     int size;
 
@@ -27,7 +28,10 @@ public class PaintTrail : MonoBehaviour
     /// </summary>
     void FixedUpdate()
     {
-        color = GetComponent<SetColor>().color;
+        if (!erase)
+            color = GetComponent<SetColor>().color;
+        else
+            color = Color.white;
         if (firstUpdate)
         {
             Vector3 extents = GetComponent<Renderer>().bounds.extents;
