@@ -9,15 +9,17 @@ public class Charge : MonoBehaviour
     public GameObject toChase;
     public int chaseWait = 2000;
     public float speed = 5;
+    public int chargeTime = 500;
+    public long startCharge = 0;
     bool charging = false;
-    int timeStart = 0;
+    long timeStart = 0;
     Vector3 velocity;
     // Use this for initialization
     void Start()
     {
         if (toChase == null)
             toChase = GameObject.Find("Player");
-        timeStart = (int)Time.time * 1000;
+        timeStart = (long) Time.time * 1000;
     }
     // Update is called once per frame
     /// <summary>
@@ -29,6 +31,11 @@ public class Charge : MonoBehaviour
         if (charging)
         {
             transform.position += velocity * Time.deltaTime;
+            if (Time.time*1000 >= startCharge + chargeTime)
+            {
+                charging = false;
+                timeStart = (long) Time.time * 1000;
+            }
             return;
         }
         if (toChase == null)
@@ -44,7 +51,7 @@ public class Charge : MonoBehaviour
         {
             charging = true;
             velocity = transform.right * speed;
+            startCharge = (long) Time.time*1000;
         }
-
     }
 }
