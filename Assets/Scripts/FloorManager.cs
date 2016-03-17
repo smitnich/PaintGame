@@ -116,7 +116,7 @@ public class FloorManager : MonoBehaviour {
         int yPixel = Mathf.RoundToInt(yPos * sizeY / height);
         int xPixelEnd = Mathf.RoundToInt((endPos.x - start.x) * sizeX / width);
         int yPixelEnd = Mathf.RoundToInt((endPos.y - start.y) * sizeY / height);
-        SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
+        //SetPixelCircle(sizeX - xPixel, sizeY - yPixel, size / 2, color);
         DrawLine(sizeX - xPixel, sizeY - yPixel, sizeX - xPixelEnd, sizeY - yPixelEnd, size, color);
     }
     /// <summary>
