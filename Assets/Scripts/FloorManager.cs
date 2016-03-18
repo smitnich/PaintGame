@@ -47,8 +47,12 @@ public class FloorManager : MonoBehaviour {
         floors = new GameObject[floorsPerRow, floorsPerColumn];
         for (int i = 0; i < floorsPerRow; i++)
             for (int j = 0; j < floorsPerColumn; j++)
-                floors[i, j] = createFloor(i, j);
+                floors[i, j] = CreateFloor(i, j);
 	}
+    public GameObject GetFloor(int x, int y)
+    {
+        return floors[x, y];
+    }
     /// <summary>
     /// Call BlitUpdate on all floors
     /// </summary>
@@ -396,8 +400,8 @@ public class FloorManager : MonoBehaviour {
     /// <param name="x">The X location of the floor within the FloorManager</param>
     /// <param name="y">The X location of the floor within the FloorManager</param>
     /// <returns>A plane with the proper pixels set for that portion of the floor</returns>
-    GameObject createFloor(int x, int y)
-        {
+    GameObject CreateFloor(int x, int y)
+    {
         GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Plane);
         obj.transform.position = new Vector3(x*truePlaneWidth+startX+truePlaneWidth/2, y*truePlaneHeight+startY+truePlaneHeight/2, gameObject.transform.position.z-1);
         //Need to scale the y axis to the current z axis, since we'll be rotation it later
@@ -419,8 +423,4 @@ public class FloorManager : MonoBehaviour {
         return obj;
     }
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
