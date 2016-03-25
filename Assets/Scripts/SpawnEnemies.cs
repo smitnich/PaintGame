@@ -110,20 +110,20 @@ public class SpawnEnemies : MonoBehaviour {
                             drawCount = 0;
                         }
                         drawCount = 0;
+                        break;
                     }
                     else
                     {
                         // Move on to the next position to draw to
+                        lineRend.SetVertexCount(drawCount + 2);
                         drawCount++;
-                        lineRend.SetVertexCount(drawCount + 1);
-                        lineRend.SetPosition(drawCount, points[drawCount % points.Length]);
                     }
                 }
                 // Otherwise update the end of the line to the new position of the spawner
-                else if (drawCount < points.Length)
-                {
-                    lineRend.SetPosition(drawCount, points[drawCount]);
-                }
+                Vector3 truePos = transform.position - lineRend.transform.position;
+                truePos.x -= GetComponent<Renderer>().bounds.extents.x;
+                truePos.y -= GetComponent<Renderer>().bounds.extents.y;
+                lineRend.SetPosition(drawCount, truePos);
                 break;
             case State.moving:
                 // Move towards our target location so we can begin spawning objects at it
